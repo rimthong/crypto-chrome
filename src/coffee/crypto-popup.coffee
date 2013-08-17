@@ -18,11 +18,12 @@ $ ->
     #TODO decrypt magic here
     cipherText = $('#popup-textarea').val()
     master_password = prompt("Master password to get keys")
+    index = parseInt($(this).data('index'))
     engine.list_private_keys(master_password, (err, keys) ->
       if err
         alert err
       else
-        engine.decrypt(cipherText, keys[0], prompt("Private key passphrase"), master_password, (err, text) ->
+        engine.decrypt(cipherText, keys[index], prompt("Private key passphrase"), master_password, (err, text) ->
           $('#popup-textarea').val text
         )
     )
@@ -49,12 +50,13 @@ $ ->
 
     master_password = prompt "Master password to get keys"
     cipherText = null
+    index = parseInt($(this).data('index'))
     engine.list_public_keys(master_password, (err, keys) ->
       if err
         alert err
       else
 
-        engine.encrypt(plainText, keys[0], (err, encrypted_message) ->
+        engine.encrypt(plainText, keys[index], (err, encrypted_message) ->
           cipherText = encrypted_message
           console.log(cipherText)
           yes
