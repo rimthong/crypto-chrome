@@ -8,6 +8,12 @@ $ ->
       chrome.tabs.sendMessage tabs[0].id, {fonction: 'retrieve'}, (response)->
         $('#popup-textarea').html response.text
 
+  $('#button-import-message-textarea').click ()->
+    console.log "Clicked text area"
+    chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
+      chrome.tabs.sendMessage tabs[0].id, {fonction: 'retrieveLast'}, (response)->
+        $('#popup-textarea').html response.text
+
   $('#button-decrypt').click ()->
     #TODO decrypt magic here
     cipherText = $('#popup-textarea').val()
