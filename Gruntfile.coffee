@@ -50,6 +50,8 @@ module.exports = (grunt)->
         files: [expand: true, flatten: true, src: ['src/js/*'], dest: 'dist/js/']
       bootstrap:
         files: [src: ['bower_components/bootstrap/dist/css/bootstrap.min.css'], dest: 'dist/css/bootstrap.min.css']
+      md5:
+        files: [src: ['vendor/crypto-js/md5.js'], dest: 'dist/js/md5.js']
       fontawesome:
         files: [src: ['bower_components/font-awesome/css/font-awesome.min.css'], dest: 'dist/css/font-awesome.min.css']
       font:
@@ -85,5 +87,5 @@ module.exports = (grunt)->
   grunt.registerTask 'default', ['bower', 'compile', 'copy-resources']
   grunt.registerTask 'compile', ['coffee:compile', 'stylus:compile', 'jade:html']
   grunt.registerTask 'build', ['compile', 'copy-resources']
-  grunt.registerTask 'copy-resources',  ['concat', 'copy:img', 'copy:manifest', 'copy:bootstrap', 'copy:fontawesome', 'copy:font', 'copy:js']
+  grunt.registerTask 'copy-resources',  ['concat', 'copy:img', 'copy:manifest', 'copy:bootstrap', 'copy:fontawesome', 'copy:font', 'copy:js', 'copy:md5']
   grunt.registerTask 'test', ['karma:unit']
