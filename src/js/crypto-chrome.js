@@ -80,7 +80,7 @@ function cryptochrome() {
     var keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']));
     if(keys) {
       keys.push(key);
-      window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, keys);
+      window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys));
       return callback();
     }
     return callback("Wrong master key");
@@ -105,7 +105,7 @@ function cryptochrome() {
     var keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']));
     if(keys) {
       keys.push(key);
-      window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, keys);
+      window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(keys));
       return callback();
     }
     return callback("Wrong master key");

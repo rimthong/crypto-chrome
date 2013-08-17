@@ -43,8 +43,8 @@ read_storage = (master_password) ->
     if not master_password
       master_password = prompt "Master password to retrieve keys"
     try
-      pub_keys = JSON.parse(sjcl.decrypt master_password, storage['crypto-chrome-pub'])
-      priv_keys = JSON.parse(sjcl.decrypt master_password, storage['crypto-chrome-priv'])
+      pub_keys = JSON.parse(sjcl.decrypt(master_password, storage['crypto-chrome-pub']))
+      priv_keys = JSON.parse(sjcl.decrypt(master_password, storage['crypto-chrome-priv']))
     catch e
       alert "Failed to decrypt storage"
       throw e
