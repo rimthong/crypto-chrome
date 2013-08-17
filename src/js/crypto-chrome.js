@@ -127,7 +127,7 @@ function cryptochrome() {
       }
 
       return callback(null, results);
-    })
+    });
   }
   this.find_key_by_email = find_key_by_email;
 
@@ -152,9 +152,32 @@ function cryptochrome() {
         }
       }
       return callback(null, results);
-    })
+    });
   }
   this.find_private_key_by_id = find_private_key_by_id;
+
+  function delete_public_key_by_index(master_password, index, callback) {
+    return this.list_public_keys(master_password, function(err, keys) {
+      if(err) {
+        return callback(err);
+      }
+      keys.slice(index, 1);
+      window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys));
+    });
+  }
+  this.delete_public_key_by_index = delete_public_key_by_index;
+
+  function delete_private_key_by_index(master_password, index, callback) {
+    return this.list_private_keys(master_password, function(err, keys) {
+      if(err) {
+        return callback(err);
+      }
+      keys.slice(index, 1);
+      window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(keys));
+    });
+  }
+  this.delete_private_key_by_index = delete_private_key_by_index;
+
 
   return this;
 }

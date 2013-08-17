@@ -8,14 +8,17 @@ $ ->
     priv_keys = keys[1]
 
     $("#public tbody, #private tbody").empty()
+    i = 0
     for key in pub_keys
-      name = key[0].userIds[0].text
-      $("#public tbody").append("<tr><td><img src='http://placekitten.com/30/30' /></td><td>" + name + "</td><td><button class='btn btn-danger remove-public-key'><i class='icon-minus'></i> Remove</button></td></tr>")
+      name = openpgp_encoding_html_encode(key[0].userIds[0].text)
+      $("#public tbody").append("<tr><td>" + i + "</td><td><img src='http://placekitten.com/30/30' /></td><td>" + name + "</td><td><button class='btn btn-danger remove-public-key' data-num='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>")
+      i++
 
+    i = 0
     for key in priv_keys
-      name = key[0].userIds[0].text
-      $("#private tbody").append("<tr><td><img src='http://placekitten.com/30/30' /></td><td>" + name + "</td><td><button class='btn btn-danger remove-public-key'><i class='icon-minus'></i> Remove</button></td></tr>")
-
+      name = openpgp_encoding_html_encode(key[0].userIds[0].text)
+      $("#private tbody").append("<tr><td>" + i + "</td><td><td><img src='http://placekitten.com/30/30' /></td><td>" + name + "</td><td><button class='btn btn-danger remove-public-key' data-num='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>")
+      i++
 
   read_keys()
 
