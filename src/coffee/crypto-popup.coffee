@@ -17,8 +17,17 @@ $ ->
   $('#button-decrypt').click ()->
     #TODO decrypt magic here
     cipherText = $('#popup-textarea').val()
-    clearText = "This is clear like woah: #{cipherText}"
-    $('#popup-textarea').val clearText
+    master_password = prompt("Master password to get keys")
+    engine.list_private_keys(master_password, (err, keys) ->
+      if err
+        alert err
+      else
+        engine.decrypt(cipherText, keys[0], prompt("Private key passphrase"), master_password, (err, text) ->
+          $('#popup-textarea').val text
+        )
+    )
+
+
 
   $('#button-sign').click ()->
     plainText = $('#popup-textarea').val()
@@ -45,7 +54,7 @@ $ ->
         alert err
       else
 
-        engine.encrypt(plainText, keys[0][0], (err, encrypted_message) ->
+        engine.encrypt(plainText, keys[0], (err, encrypted_message) ->
           cipherText = encrypted_message
           console.log(cipherText)
           yes

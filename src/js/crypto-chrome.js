@@ -8,7 +8,7 @@ function cryptochrome() {
    * @return string Armored string of the message encoded
    */
   function encrypt(message, key, callback) {
-    var encrypted_message = openpgp.write_encrypted_message([key], message);
+    var encrypted_message = openpgp.write_encrypted_message(key, message);
     if(encrypted_message) {
       return callback(null, encrypted_message);
     }
@@ -20,44 +20,42 @@ function cryptochrome() {
    * Descrypt an armored text
    * @return string
    */
-  function decrypt(armored_encrypted_msg, key, passphrase, callback) {
-    var privkey = this.find_private_key_by_id(key.obj.getKeyId());
-    if(privkey.length == 0) {
-      return callback("No private key found");
-    }
-    var privkey_armored = privkey[0].key.armored;
+  function decrypt(armored_encrypted_msg, key, passphrase, master_password, callback) {
 
-    if(!key.decryptSecretMPIs(passphrase)) {
-      return callback("Wrong passphrase");
+
+    priv_key = key;
+    if (priv_key.length < 1) {
+      throw "No private key";
     }
 
     var msg = openpgp.read_message(armored_encrypted_msg);
-
+    var keymat = null;
+    var sesskey = null;
+    // Find the private (sub)key for the session key of the message
     for (var i = 0; i< msg[0].sessionKeys.length; i++) {
-      if (privkeys[0].privateKeyPacket.publicKey.getKeyId() === msg[0].sessionKeys[i].keyId.bytes) {
-        var keymat = { key: privkey[0], keymaterial: privkey[0].privateKeyPacket};
-        var sesskey = msg[0].sessionKeys[i];
+      if (priv_key[0].privateKeyPacket.publicKey.getKeyId() == msg[0].sessionKeys[i].keyId.bytes) {
+        keymat = { key: priv_key[0], keymaterial: priv_key[0].privateKeyPacket};
+        sesskey = msg[0].sessionKeys[i];
         break;
       }
-
-      for (var j = 0; j < privkey[0].subKeys.length; j++) {
-        if (privkey[0].subKeys[j].publicKey.getKeyId() === msg[0].sessionKeys[i].keyId.bytes) {
-          if(!privkey[0].subKeys[j].decryptSecretMPIs(passphrase)) {
-            return callback("Wrong passphrase");
-          }
-          var keymat = { key: privkey[0], keymaterial: privkey[0].subKeys[j]};
-          var sesskey = msg[0].sessionKeys[i];
+      for (var j = 0; j < priv_key[0].subKeys.length; j++) {
+        if (priv_key[0].subKeys[j].publicKey.getKeyId() == msg[0].sessionKeys[i].keyId.bytes) {
+          keymat = { key: priv_key[0], keymaterial: priv_key[0].subKeys[j]};
+          sesskey = msg[0].sessionKeys[i];
           break;
         }
       }
     }
-
-    try {
-      var decrypted = msg[0].decrypt(keymat, sesskey);
-      return callback(null, decrypted);
-    } catch (e) {
-      return callback("Failed to decrypt message");
+    if (keymat != null) {
+      if (!keymat.keymaterial.decryptSecretMPIs(passphrase)) {
+        throw "Wrong passphrase for private key";
+        return;
+      }
+      callback(null, msg[0].decrypt(keymat, sesskey));
+    } else {
+      throw "No private key found do decrypt message.";
     }
+
 
   };
   this.decrypt = decrypt;
@@ -139,6 +137,7 @@ function cryptochrome() {
     });
   }
   this.find_key_by_email = find_key_by_email;
+  */
 
   function find_private_key_by_id(master_password, id, callback) {
     return this.list_private_keys(master_password, function(err, keys) {
@@ -148,17 +147,23 @@ function cryptochrome() {
 
       var results = []
       for(var i = 0; i <= keys[0].length; i++) {
-        if (id == keys[i].obj.getKeyId()) {
-          results.push({ key: keys[i], keymaterial: keys[i].obj.privateKeyPacket});
+        if (id == keys[i][0].getKeyId()) {
+          results.push({ key: keys[i], keymaterial: keys[i][0].jprivateKeyPacket});
+          break;
         }
-        if(keys[i].obj.subKeys != null) {
-          var subkeyids = this.privateKeys[i].obj.getSubKeyIds();
+        /* 
+         * @TODO subkeys
+         */
+        /*
+        if(keys[i][0].subKeys != null) {
+          var subkeyids = this.privateKeys[i][0].getSubKeyIds();
           for(var j = 0; j <= subkeyids.length; j++) {
             if (keyId == util.hexstrdump(subkeyids[j])) {
-              results.push({ key: keys[i], keymaterial: keys[i].obj.subKeys[j]});
+              results.push({ key: keys[i], keymaterial: keys[i][0].subKeys[j]});
             }
           }
         }
+        */
       }
       return callback(null, results);
     });
@@ -176,7 +181,6 @@ function cryptochrome() {
     });
   }
   this.delete_public_key_by_index = delete_public_key_by_index;
-  */
 
   function delete_private_key_by_index(master_password, index, callback) {
     return this.list_private_keys(master_password, function(err, keys) {
