@@ -1,5 +1,8 @@
-function crypto_chrome() {
-  this.openpgp = openpgp.init();
+function cryptochrome() {
+  function init() {
+    this.openpgp = openpgp.init();
+  }
+  this.init = init;
 
   /**
    * @return string Armored string of the message encoded
@@ -85,7 +88,7 @@ function crypto_chrome() {
   this.add_public_key_from_armored = add_public_key_from_armored;
 
   function list_private_keys(master_password, callback) {
-    var keys = sjcl.decrypt(master_password, window.localStorage['crypto-chrome-private']);
+    var keys = sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']);
     if(keys) {
       return callback(null, keys);
     }
@@ -99,10 +102,10 @@ function crypto_chrome() {
       return callback("Wrong key format.");
     }
 
-    var keys = sjcl.decrypt(window.localStorage['crypto-chrome-private']);
+    var keys = sjcl.decrypt(window.localStorage['crypto-chrome-priv']);
     if(keys) {
       keys.append(key);
-      window.localStorage['crypto-chrome-private'] = sjcl.encrypt(master_password, keys);
+      window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, keys);
       return callback();
     }
     return callback("Wrong master key");
@@ -152,4 +155,6 @@ function crypto_chrome() {
     })
   }
   this.find_private_key_by_id = find_private_key_by_id;
+
+  return this;
 }
