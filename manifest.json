@@ -24,7 +24,7 @@
     {
       "matches": ["https://www.facebook.com/*"],
       "js": ["js/vendor.js", "js/cs-facebook.js"]
-    },
+    }
   ],
   "icons": {
     "16" : "images/crypto-chrome16.png",
