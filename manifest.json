@@ -16,7 +16,15 @@
     {
       "matches": ["https://mail.google.com/*"],
       "js": ["js/vendor.js", "js/cs-gmail.js"]
-    }
+    },
+    {
+      "matches": ["https://*.mail.live.com/*"],
+      "js": ["js/vendor.js", "js/cs-outlook.js"]
+    },
+    {
+      "matches": ["https://www.facebook.com/*"],
+      "js": ["js/vendor.js", "js/cs-facebook.js"]
+    },
   ],
   "icons": {
     "16" : "images/crypto-chrome16.png",
