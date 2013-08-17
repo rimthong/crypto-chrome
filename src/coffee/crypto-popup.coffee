@@ -17,7 +17,7 @@ $ ->
   $('#button-decrypt').click ()->
     cipherText = $('#popup-textarea').val()
     master_password = prompt("Master password to get keys")
-    index = parseInt($(this).data('index'))
+    index = parseInt($("#private").val())
     engine.list_private_keys(master_password, (err, keys) ->
       if err
         alert err
@@ -31,8 +31,7 @@ $ ->
     plainText = $('#popup-textarea').val()
 
     master_password = prompt "Master password to get keys"
-    index = parseInt($(this).data('index'))
-    index = 0
+    index = parseInt($("#private").val())
     engine.list_private_keys(master_password, (err, keys) ->
       if err
         alert err
@@ -56,7 +55,7 @@ $ ->
 
     master_password = prompt "Master password to get keys"
     cipherText = null
-    index = parseInt($(this).data('index'))
+    index = parseInt($("#public").val())
     engine.list_public_keys(master_password, (err, keys) ->
       if err
         alert err
