@@ -68,6 +68,7 @@ $ ->
         )
     )
 
+    $('#popup-textarea').val(cipherText)
     #We send the content-script our new ciphertext
     chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
       chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
