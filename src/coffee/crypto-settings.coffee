@@ -52,6 +52,7 @@ $ ->
         console.log err
       else
         read_keys(master_password)
+    )
 
   $('#public').on('click', '.remove-public-key', ->
     master_password = prompt "Master password to delete public key"
@@ -60,7 +61,7 @@ $ ->
         console.log err
       else
         read_keys(master_password)
-  )
+    )
 
 read_storage = (master_password) ->
   storage = window.localStorage
