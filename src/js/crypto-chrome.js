@@ -16,6 +16,7 @@ function cryptochrome() {
   };
   this.encrypt = encrypt;
 
+
   /**
    * Descrypt an armored text
    * @return string
@@ -56,9 +57,29 @@ function cryptochrome() {
       throw "No private key found do decrypt message.";
     }
 
-
   };
   this.decrypt = decrypt;
+
+  /**
+   * Take message and sign it
+   * @return string
+   */
+  function sign(message, key,  passphrase, master_password, callback) {
+    priv_key = key;
+    if (priv_key.length < 1) {
+      throw "No private key";
+    }
+    console.log priv_key.decryptSecretMPIs(passphrase)
+
+
+    var signed_message = openpgp.write_signed_message(key, message);
+    if(signed_message) {
+      return callback(null, signed_message);
+    }
+    return callback("Failed to sign message");
+  };
+  this.sign = sign;
+
 
   function list_public_keys(master_password, callback) {
     var armored_keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']));

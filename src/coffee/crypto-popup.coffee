@@ -15,7 +15,6 @@ $ ->
         $('#popup-textarea').html response.text
 
   $('#button-decrypt').click ()->
-    #TODO decrypt magic here
     cipherText = $('#popup-textarea').val()
     master_password = prompt("Master password to get keys")
     index = parseInt($(this).data('index'))
@@ -28,22 +27,27 @@ $ ->
         )
     )
 
-
-
   $('#button-sign').click ()->
     plainText = $('#popup-textarea').val()
 
-    #TODO replace signature strategy here
-    signedText = "====Signed message==== \n #{plainText} \n ==== End message ===="
-
-    #We send the content-script our signed text
-    chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
-      chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: signedText}, (response)->
-        if response and response.status is 'ok'
-          #Do nothing, injection successful
-        else
-          #Did not inject, just alter textarea
-          $('#popup-textarea').val(cipherText)
+    master_password = prompt "Master password to get keys"
+    index = parseInt($(this).data('index'))
+    engine.list_private_keys(master_password, (err, keys) ->
+      if err
+        alert err
+      else
+        engine.sign(plainText, keys[index], prompt("Private key passphrase"), master_password, (err, signed_message) ->
+          #We send the content-script our signed text
+          chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
+            chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: signedText}, (response)->
+              if response and response.status is 'ok'
+                #Do nothing, injection successful
+              else
+                #Did not inject, just alter textarea
+                $('#popup-textarea').val(cipherText)
+                yes
+        )
+    )
 
   $('#button-encrypt').click ()->
     plainText = $('#popup-textarea').val()
@@ -62,9 +66,6 @@ $ ->
           yes
         )
     )
-
-    #TODO replace encryption strategy here
-    $('#popup-textarea').val(cipherText)
 
     #We send the content-script our new ciphertext
     chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
