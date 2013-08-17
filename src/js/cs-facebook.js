@@ -18,6 +18,9 @@ $(document).ready(function(){
 
         ps = $("p");
         target = ps[ps.length - 1];
+        if (!target.innerText ){
+            return target.text();
+        }
         return target.innerText;
 
     };

@@ -12,6 +12,9 @@ $(document).ready(function(){
     getText = function (){
 
         target = $("div[g_editable='true']")[0];
+        if (!target.innerText ){
+            return target.text();
+        }
         return target.innerText;
 
     };
@@ -19,6 +22,9 @@ $(document).ready(function(){
     getLastMessage = function (){
 
         target = $("div[style='overflow: hidden;']").children()[0];
+        if (!target.innerText ){
+            return target.text();
+        }
         return target.innerText;
 
     };
