@@ -52,14 +52,20 @@ function crypto-chrome() {
   this.add_private_key = add_private_key;
 
 
-  function find_key_by_email(master_password, callback) {
+  function find_key_by_email(master_password, email, callback) {
     this.list_public_keys(master_password, function(err, keys) {
       if(err) {
         return callback(err);
       }
 
-      var keys 
+      var results = []
+      for(i in keys) {
+        for (for j in keys[i].obj.userIds) {
+          if (keys[i].obj.userIds[j].text.toLowerCase().indexOf(email) >= 0)
+            results.append(keys[i]);
+          }
+      }
 
-      return callback(null, keys);
+      return callback(null, results);
 };
 
