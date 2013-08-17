@@ -1,0 +1,38 @@
+{
+  "manifest_version": 2,
+
+  "name": "crypto-chrome",
+  "version": "0.0.0",
+  "description": "Chrome extension granting access to a crypto API, with easy webmail integration.",
+  "background": {
+    "scripts": ["js/background.js"]
+  },
+  "browser_action": {
+    "default_icon": "images/crypto-chrome48.png",
+    "default_popup": "html/crypto-popup.html",
+    "default_title": "crypto-chrome"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["js/vendor.js", "js/cs-gmail.js"]
+    },
+    {
+      "matches": ["https://*.mail.live.com/*"],
+      "js": ["js/vendor.js", "js/cs-outlook.js"]
+    },
+    {
+      "matches": ["https://www.facebook.com/*"],
+      "js": ["js/vendor.js", "js/cs-facebook.js"]
+    }
+  ],
+  "icons": {
+    "16" : "images/crypto-chrome16.png",
+    "48" : "images/crypto-chrome48.png",
+    "128": "images/crypto-chrome128.png" 
+  },
+  "options_page": "html/crypto-settings.html",
+  "permissions": [
+    "tabs"
+  ]
+}
