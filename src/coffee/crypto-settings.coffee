@@ -11,13 +11,13 @@ $ ->
     i = 0
     for key in pub_keys
       name = openpgp_encoding_html_encode(key[0].userIds[0].text)
-      $("#public tbody").append("<tr><td>" + i + "</td><td><img src='http://placekitten.com/30/30' /></td><td>" + name + "</td><td><button class='btn btn-danger remove-public-key' data-num='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>")
+      $("#public tbody").append("<tr><td>" + i + "</td><td><img src='http://placekitten.com/30/30' /></td><td>" + name + "</td><td><button class='btn btn-danger remove-public-key' data-index='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>")
       i++
 
     i = 0
     for key in priv_keys
       name = openpgp_encoding_html_encode(key[0].userIds[0].text)
-      $("#private tbody").append("<tr><td>" + i + "</td><td><td><img src='http://placekitten.com/30/30' /></td><td>" + name + "</td><td><button class='btn btn-danger remove-public-key' data-num='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>")
+      $("#private tbody").append("<tr><td>" + i + "</td><td><td><img src='http://placekitten.com/30/30' /></td><td>" + name + "</td><td><button class='btn btn-danger remove-private-key' data-index='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>")
       i++
 
   read_keys()
@@ -45,13 +45,22 @@ $ ->
     console.log "Adding private #{key}"
     yes
 
-  $('.remove-private-key').click ()->
-    console.log 'Clicked remove private key'
-    yes
+  $('#private').on('click', '.remove-private-key', ->
+    master_password = prompt "Master password to delete public key"
+    engine.delete_private_key_by_index master_password, parseInt($(this).data('index')), (err) ->
+      if err
+        console.log err
+      else
+        read_keys(master_password)
 
-  $('.remove-public-key').click ()->
-    console.log 'Clicked remove public key'
-    yes
+  $('#public').on('click', '.remove-public-key', ->
+    master_password = prompt "Master password to delete public key"
+    engine.delete_public_key_by_index master_password, parseInt($(this).data('index')), (err) ->
+      if err
+        console.log err
+      else
+        read_keys(master_password)
+  )
 
 read_storage = (master_password) ->
   storage = window.localStorage

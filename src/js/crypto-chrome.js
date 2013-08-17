@@ -161,8 +161,9 @@ function cryptochrome() {
       if(err) {
         return callback(err);
       }
-      keys.slice(index, 1);
+      keys.splice(index, 1);
       window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys));
+      callback(null);
     });
   }
   this.delete_public_key_by_index = delete_public_key_by_index;
@@ -172,12 +173,12 @@ function cryptochrome() {
       if(err) {
         return callback(err);
       }
-      keys.slice(index, 1);
+      keys.splice(index, 1);
       window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(keys));
+      callback(null);
     });
   }
   this.delete_private_key_by_index = delete_private_key_by_index;
-
 
   return this;
 }
