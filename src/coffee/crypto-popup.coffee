@@ -6,8 +6,6 @@ $ ->
     console.log "Clicked text area"
     chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
       chrome.tabs.sendMessage tabs[0].id, {fonction: 'retrieve'}, (response)->
-        console.log "response is"
-        console.log response
         $('#popup-textarea').html response.text
 
   $('#button-decrypt').click ()->
@@ -20,28 +18,33 @@ $ ->
     plainText = $('#popup-textarea').val()
 
     #TODO replace signature strategy here
-    cipherText = "====Signed message==== \n #{plainText} \n ==== End message ===="
-    $('#popup-textarea').val(cipherText)
+    signedText = "====Signed message==== \n #{plainText} \n ==== End message ===="
 
-    #We send the content-script our new ciphertext
+    #We send the content-script our signed text
     chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
-      chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
-        console.log "Listener replied with status #{response.status}"
+      chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: signedText}, (response)->
+        if response and response.status is 'ok'
+          #Do nothing, injection successful
+        else
+          #Did not inject, just alter textarea
+          $('#popup-textarea').val(cipherText)
 
   $('#button-encrypt').click ()->
     plainText = $('#popup-textarea').val()
 
     #TODO replace encryption strategy here
     cipherText = "shh, this is a secret: #{plainText}"
-    $('#popup-textarea').val(cipherText)
 
     #We send the content-script our new ciphertext
     chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
       chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
-        console.log "Listener replied with status #{response.status}"
+        if response and response.status is 'ok'
+          #Do nothing, injection successful
+        else
+          #Did not inject, just alter textarea
+          $('#popup-textarea').val(cipherText)
 
   $('#button-verify').click ()->
-    console.log "Clicked verify"
     #TODO sign verif magic here
     signedText = $('#popup-textarea').val()
     verified = true
