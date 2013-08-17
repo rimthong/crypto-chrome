@@ -109,7 +109,6 @@ function crypto_chrome() {
   }
   this.add_private_key_from_armored = add_private_key_from_armored;
 
-
   function find_key_by_email(master_password, email, callback) {
     return this.list_public_keys(master_password, function(err, keys) {
       if(err) {
@@ -117,15 +116,17 @@ function crypto_chrome() {
       }
 
       var results = []
-      for(i in keys) {
-        for (for j in keys[i].obj.userIds) {
+      for(var i = 0; i <= keys.length; i++) {
+        for(var j = 0; j <= keys[0].obj.userIds.length; j++) {
           if (keys[i].obj.userIds[j].text.toLowerCase().indexOf(email) >= 0)
             results.append(keys[i]);
           }
       }
 
       return callback(null, results);
-    }
+    })
+  }
+  this.find_key_by_email = find_key_by_email;
 
   function find_private_key_by_id(master_password, id, callback) {
     return this.list_private_keys(master_password, function(err, keys) {
@@ -134,13 +135,13 @@ function crypto_chrome() {
       }
 
       var results = []
-      for(i in keys) {
+      for(var i = 0; i <= keys[0].length; i++) {
         if (id == keys[i].obj.getKeyId()) {
           results.append({ key: keys[i], keymaterial: keys[i].obj.privateKeyPacket});
         }
         if(keys[i].obj.subKeys != null) {
           var subkeyids = this.privateKeys[i].obj.getSubKeyIds();
-          for (j in subkeyids) {
+          for(var j = 0; j <= subkeyids.length; j++) {
             if (keyId == util.hexstrdump(subkeyids[j])) {
               results.append({ key: keys[i], keymaterial: keys[i].obj.subKeys[j]});
             }
@@ -148,6 +149,7 @@ function crypto_chrome() {
         }
       }
       return callback(null, results);
-    }
-};
-
+    })
+  }
+  this.find_private_key_by_id = find_private_key_by_id;
+}
