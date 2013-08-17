@@ -18,16 +18,11 @@ $(document).ready(function(){
 
     chrome.runtime.onMessage.addListener(
       function(request, sender, sendResponse) {
-          if (request.fonction && request.fonction === "inject"){
-            sendResponse({status: "ok"});
-            setText(request.message);
-          }
-    }); 
-
-    chrome.runtime.onMessage.addListener(
-      function(request, sender, sendResponse) {
           if (request.fonction && request.fonction === "retrieve"){
             sendResponse({status: "ok", text:getText()});
+          } else (request.fonction && request.fonction === "inject"){
+            sendResponse({status: "ok"});
+            setText(request.message);
           }
     }); 
 
