@@ -61,7 +61,7 @@ $ ->
             &nbsp; Bad signature!
           </h4>
         """
-  $('#popup-message-box').html message
+    $('#popup-message-box').html message
 
   populate_keys = ->
     storage = window.localStorage
