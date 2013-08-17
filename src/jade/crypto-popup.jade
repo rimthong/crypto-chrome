@@ -13,25 +13,11 @@ body
         |  Import from page
       .well.first-well
         .row-fluid
-          label 
-            i.icon-user
-            |  Private key (you)
-        .row-fluid
-          select#public
-        .row-fluid.action-buttons
-          button#button-decrypt.btn.btn-warning
-            i.icon-unlock
-            |  Decrypt
-          button#button-sign.btn.btn-info
-            i.icon-check
-            |  Sign
-      .well
-        .row-fluid
           label
             i.icon-group
             |  Public key (correspondent)
         .row-fluid
-          select#private
+          select#public
         .row-fluid.action-buttons
           button#button-encrypt.btn.btn-warning
             i.icon-lock
@@ -39,6 +25,21 @@ body
           button#button-verify.btn.btn-info
             i.icon-check
             |  Verify Signature
+
+      .well
+        .row-fluid
+          label 
+            i.icon-user
+            |  Private key (you)
+        .row-fluid
+          select#private
+        .row-fluid.action-buttons
+          button#button-decrypt.btn.btn-warning
+            i.icon-unlock
+            |  Decrypt
+          button#button-sign.btn.btn-info
+            i.icon-check
+            |  Sign
   script(src="../js/vendor.js")
   script(src="../js/background.js")
   script(src="../js/crypto-popup.js")
