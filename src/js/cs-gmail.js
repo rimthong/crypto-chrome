@@ -23,6 +23,14 @@ $(document).ready(function(){
 
     };
 
+    getLastSender = function (){
+
+        targets = $('span[class="go"]');
+        target = targets[targets.length - 1];
+        return target.innerText.replace('<','').replace('>','');
+
+    };
+
     chrome.runtime.onMessage.addListener(
       function(request, sender, sendResponse) {
           if (request.fonction && request.fonction === "retrieve"){
@@ -31,7 +39,7 @@ $(document).ready(function(){
             sendResponse({status: "ok"});
             setText(request.message);
           } else if (request.fonction && request.fonction === "retrieveLast"){
-            sendResponse({status: "ok", text:getLastMessage()});
+            sendResponse({status: "ok", text:getLastMessage(), sender:getLastSender()});
           }
 
     }); 
