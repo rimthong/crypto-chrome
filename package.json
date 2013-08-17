@@ -1,0 +1,42 @@
+{
+  "name": "crypto-chrome",
+  "version": "0.0.0",
+  "description": "Chrome extension granting access to a crypto API, with easy webmail integration.",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": "https://github.com/bushibytes/crypto-chrome",
+  "keywords": [
+    "crypto",
+    "chrome",
+    "chrome",
+    "extension",
+    "pgp",
+    "security"
+  ],
+  "author": "",
+  "license": "BSD",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jade": "~0.8.0",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-stylus": "~0.7.0",
+    "grunt-contrib-watch": "~0.5.2",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "karma-script-launcher": "~0.1.0",
+    "karma-chrome-launcher": "~0.1.0",
+    "karma-firefox-launcher": "~0.1.0",
+    "karma-html2js-preprocessor": "~0.1.0",
+    "karma-jasmine": "~0.1.0",
+    "karma-requirejs": "~0.1.0",
+    "karma-coffee-preprocessor": "~0.1.0",
+    "karma-phantomjs-launcher": "~0.1.0",
+    "karma": "~0.10.1",
+    "phantomjs": "~1.9.1-5",
+    "grunt-bower-task": "~0.3.1",
+    "grunt-karma": "~0.6.1",
+    "grunt-contrib-clean": "~0.5.0"
+  }
+}
