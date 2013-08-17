@@ -40,7 +40,7 @@ $ ->
           #We send the content-script our signed text
           $('#popup-textarea').val(signed_message)
           chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
-            chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: signedText}, (response)->
+            chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: signed_message}, (response)->
               if response and response.status is 'ok'
                 #Do nothing, injection successful
               else

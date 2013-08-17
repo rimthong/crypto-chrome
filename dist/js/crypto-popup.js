@@ -60,7 +60,7 @@ $(function() {
           }, function(tabs) {
             return chrome.tabs.sendMessage(tabs[0].id, {
               fonction: 'inject',
-              message: signedText
+              message: signed_message
             }, function(response) {
               if (response && response.status === 'ok') {
 
