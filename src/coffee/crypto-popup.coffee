@@ -43,8 +43,24 @@ $ ->
     console.log "Clicked verify"
     #TODO sign verif magic here
     signedText = $('#popup-textarea').val()
-    signedConfirmation = "Cool, the text checks out \n ===== \n #{signedText}"
-    $('#popup-textarea').val signedConfirmation
+    verified = true
+    if verified
+      message =
+        """
+          <h4 class="success">
+            <i class="icon-check-sign"/>
+            &nbsp; Signature ok!
+          </h4>
+        """
+    else
+      message =
+        """
+          <h4 class="error">
+            <i class="icon-warning-sign"/>
+            &nbsp; Bad signature!
+          </h4>
+        """
+    $('#popup-message-box').html message
 
   populate_keys = ->
     storage = window.localStorage
