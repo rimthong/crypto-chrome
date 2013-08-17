@@ -1,8 +1,16 @@
 function crypto-chrome() {
   this.openpgp = openpgp.init();
 
+  /**
+   * @return string Armored string of the message encoded
+   */
   function encrypt(message, key, callback) {
-
+    try {
+      var encrypted_message = this.openpgp.write_encrypted_message([key], message);
+    } catch(e) {
+      return callback(e);
+    }
+    return callback(null, encrypted_message);
   };
   this.encrypt = encrypt;
 
