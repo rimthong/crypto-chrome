@@ -24,7 +24,7 @@ module.exports = (grunt)->
         src: ['bower_components/jquery/jquery.js', 'bower_components/bootstrap/dist/js/bootstrap.js']
         dest: 'dist/js/vendor.js'
       background:
-        src: ['vendor/openpgp/openpgp.min.js', 'vendor/sjcl/sjcl.js']
+        src: ['vendor/openpgp/openpgp.js', 'vendor/sjcl/sjcl.js']
         dest: 'dist/js/background.js'
 
     stylus:

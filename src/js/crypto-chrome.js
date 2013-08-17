@@ -63,7 +63,7 @@ function cryptochrome() {
   this.decrypt = decrypt;
 
   function list_public_keys(master_password, callback) {
-    var keys = sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']);
+    var keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']));
     if(keys) {
       return callback(null, keys);
     }
@@ -77,9 +77,9 @@ function cryptochrome() {
       return callback("Wrong key format.");
     }
 
-    var keys = sjcl.decrypt(window.localStorage['crypto-chrome-pub']);
+    var keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']));
     if(keys) {
-      keys.append(key);
+      keys.push(key);
       window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, keys);
       return callback();
     }
@@ -88,7 +88,7 @@ function cryptochrome() {
   this.add_public_key_from_armored = add_public_key_from_armored;
 
   function list_private_keys(master_password, callback) {
-    var keys = sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']);
+    var keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']));
     if(keys) {
       return callback(null, keys);
     }
@@ -96,15 +96,15 @@ function cryptochrome() {
   };
   this.list_private_keys = list_private_keys;
 
-  function add_private_key_from_armored(master_password, key, callback) {
+  function add_private_key_from_armored(master_password, armored_key, callback) {
     key = this.openpgp.read_privateKey(armored_key);
     if(!key) {
       return callback("Wrong key format.");
     }
 
-    var keys = sjcl.decrypt(window.localStorage['crypto-chrome-priv']);
+    var keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']));
     if(keys) {
-      keys.append(key);
+      keys.push(key);
       window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, keys);
       return callback();
     }
@@ -122,7 +122,7 @@ function cryptochrome() {
       for(var i = 0; i <= keys.length; i++) {
         for(var j = 0; j <= keys[0].obj.userIds.length; j++) {
           if (keys[i].obj.userIds[j].text.toLowerCase().indexOf(email) >= 0)
-            results.append(keys[i]);
+            results.push(keys[i]);
           }
       }
 
@@ -140,13 +140,13 @@ function cryptochrome() {
       var results = []
       for(var i = 0; i <= keys[0].length; i++) {
         if (id == keys[i].obj.getKeyId()) {
-          results.append({ key: keys[i], keymaterial: keys[i].obj.privateKeyPacket});
+          results.push({ key: keys[i], keymaterial: keys[i].obj.privateKeyPacket});
         }
         if(keys[i].obj.subKeys != null) {
           var subkeyids = this.privateKeys[i].obj.getSubKeyIds();
           for(var j = 0; j <= subkeyids.length; j++) {
             if (keyId == util.hexstrdump(subkeyids[j])) {
-              results.append({ key: keys[i], keymaterial: keys[i].obj.subKeys[j]});
+              results.push({ key: keys[i], keymaterial: keys[i].obj.subKeys[j]});
             }
           }
         }
