@@ -23,6 +23,9 @@ module.exports = (grunt)->
       js:
         src: ['bower_components/jquery/jquery.js']
         dest: 'dist/js/vendor.js'
+      background:
+        src: ['vendor/openpgp/openpgp.min.js']
+        dest: 'dist/js/background.js'
 
     stylus:
       compile:
@@ -43,6 +46,8 @@ module.exports = (grunt)->
         files: [src: ['manifest.json'], dest: 'dist/manifest.json']
       img:
         files: [expand: true, flatten: true, src: ['src/images/*'], dest: 'dist/images/']
+      js:
+        files: [expand: true, flatten: true, src: ['src/js/*'], dest: 'dist/js/']
 
     karma:
       unit:
