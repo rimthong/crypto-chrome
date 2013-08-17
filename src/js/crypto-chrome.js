@@ -1,22 +1,24 @@
-var crypto-chrome;
+var crypto-chrome = {
 
-crypto-chrome.prototype.encrypt = function(message, key, callback) {
-  return callback(message);
-}
+  'encrypt': function(message, key, callback) {
 
-crypto-chrome.prototype.decrypt = function(message, key, callback) {
-  return callback(message);
-}
+  },
+  'decrypt': function(message, key, callback) {
 
-crypto-chrome.prototype.list_keys = function(callback) {
-  list_keys = []
-  return callback(list_keys);
-}
+  },
+  'sign': function(message, key, callback) {
+    return callback('patate');
+  },
+  'verify': function(message, key, callbac) {
 
-crypto-chrome.prototype.add_key = function(key, callback) {
-  return callback();
-}
+  },
+  'list_keys': function(callback) {
 
-crypto-chrome.prototype.delete_key = function(key, callback) {
-  return callback();
-}
+  },
+  'add_key': function(key, callback) {
+
+  },
+  'delete_key': function(key, callback) {
+
+  }
+};
