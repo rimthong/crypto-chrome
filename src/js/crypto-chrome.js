@@ -69,10 +69,9 @@ function cryptochrome() {
     if (priv_key.length < 1) {
       throw "No private key";
     }
-    console.log priv_key.decryptSecretMPIs(passphrase)
 
-
-    var signed_message = openpgp.write_signed_message(key, message);
+    priv_key[0].decryptSecretMPIs(passphrase);
+    var signed_message = openpgp.write_signed_message(priv_key[0], message);
     if(signed_message) {
       return callback(null, signed_message);
     }

@@ -32,6 +32,7 @@ $ ->
 
     master_password = prompt "Master password to get keys"
     index = parseInt($(this).data('index'))
+    index = 0
     engine.list_private_keys(master_password, (err, keys) ->
       if err
         alert err
