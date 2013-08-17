@@ -6,8 +6,8 @@ lib-cov
 *.out
 *.pid
 *.gz
-*.swp~
-*.un~
+*.swp
+*.un
 
 pids
 logs
@@ -17,3 +17,4 @@ npm-debug.log
 node_modules/
 bower_components/
 
+dist/
