@@ -3,7 +3,7 @@ $ ->
   console.log "Loaded settings page"
 
   read_keys = (master_password) ->
-    keys = read_storage master_password
+    keys = read_storage master_password, engine
     pub_keys = keys[0]
     priv_keys = keys[1]
 
@@ -63,7 +63,7 @@ $ ->
         read_keys(master_password)
     )
 
-read_storage = (master_password) ->
+read_storage = (master_password, engine) ->
   storage = window.localStorage
 
   if not (storage['crypto-chrome-pub'] or storage['crypto-chrome-priv'])
@@ -77,8 +77,14 @@ read_storage = (master_password) ->
     if not master_password
       master_password = prompt "Master password to retrieve keys"
     try
-      pub_keys = JSON.parse(sjcl.decrypt(master_password, storage['crypto-chrome-pub']))
-      priv_keys = JSON.parse(sjcl.decrypt(master_password, storage['crypto-chrome-priv']))
+      pub_keys = null
+      priv_keys = null
+      engine.list_public_keys(master_password, (err, keys) ->
+        pub_keys = keys
+      )
+      engine.list_private_keys(master_password, (err, keys) ->
+        priv_keys = keys
+      )
     catch e
       alert "Failed to decrypt storage"
       throw e

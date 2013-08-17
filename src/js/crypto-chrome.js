@@ -1,6 +1,6 @@
 function cryptochrome() {
   function init() {
-    this.openpgp = openpgp.init();
+    openpgp.init();
   }
   this.init = init;
 
@@ -8,7 +8,7 @@ function cryptochrome() {
    * @return string Armored string of the message encoded
    */
   function encrypt(message, key, callback) {
-    var encrypted_message = this.openpgp.write_encrypted_message([key], message);
+    var encrypted_message = openpgp.write_encrypted_message([key], message);
     if(encrypted_message) {
       return callback(null, encrypted_message);
     }
@@ -31,7 +31,7 @@ function cryptochrome() {
       return callback("Wrong passphrase");
     }
 
-    var msg = this.openpgp.read_message(armored_encrypted_msg);
+    var msg = openpgp.read_message(armored_encrypted_msg);
 
     for (var i = 0; i< msg[0].sessionKeys.length; i++) {
       if (privkeys[0].privateKeyPacket.publicKey.getKeyId() === msg[0].sessionKeys[i].keyId.bytes) {
@@ -63,8 +63,12 @@ function cryptochrome() {
   this.decrypt = decrypt;
 
   function list_public_keys(master_password, callback) {
-    var keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']));
-    if(keys) {
+    var armored_keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']));
+    if(armored_keys) {
+      keys = []
+      for (var i = 0; i < armored_keys.length; i++) {
+        keys.push(openpgp.read_publicKey(armored_keys[0]));
+      }
       return callback(null, keys);
     }
     return callback("Wrong master key");
@@ -72,14 +76,14 @@ function cryptochrome() {
   this.list_public_keys = list_public_keys;
 
   function add_public_key_from_armored(master_password, armored_key, callback) {
-    key = this.openpgp.read_publicKey(armored_key);
+    key = openpgp.read_publicKey(armored_key);
     if(!key) {
       return callback("Wrong key format.");
     }
 
     var keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']));
     if(keys) {
-      keys.push(key);
+      keys.push(armored_key);
       window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys));
       return callback();
     }
@@ -88,8 +92,12 @@ function cryptochrome() {
   this.add_public_key_from_armored = add_public_key_from_armored;
 
   function list_private_keys(master_password, callback) {
-    var keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']));
-    if(keys) {
+    var armored_keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']));
+    if(armored_keys) {
+      keys = []
+      for (var i = 0; i < armored_keys.length; i++) {
+        keys.push(openpgp.read_privateKey(armored_keys[0]));
+      }
       return callback(null, keys);
     }
     return callback("Wrong master key");
@@ -97,14 +105,14 @@ function cryptochrome() {
   this.list_private_keys = list_private_keys;
 
   function add_private_key_from_armored(master_password, armored_key, callback) {
-    key = this.openpgp.read_privateKey(armored_key);
+    key = openpgp.read_privateKey(armored_key);
     if(!key) {
       return callback("Wrong key format.");
     }
 
     var keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']));
     if(keys) {
-      keys.push(key);
+      keys.push(armored_key);
       window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(keys));
       return callback();
     }
@@ -112,6 +120,7 @@ function cryptochrome() {
   }
   this.add_private_key_from_armored = add_private_key_from_armored;
 
+  /*
   function find_key_by_email(master_password, email, callback) {
     return this.list_public_keys(master_password, function(err, keys) {
       if(err) {
@@ -167,6 +176,7 @@ function cryptochrome() {
     });
   }
   this.delete_public_key_by_index = delete_public_key_by_index;
+  */
 
   function delete_private_key_by_index(master_password, index, callback) {
     return this.list_private_keys(master_password, function(err, keys) {
@@ -180,5 +190,6 @@ function cryptochrome() {
   }
   this.delete_private_key_by_index = delete_private_key_by_index;
 
+  this.init();
   return this;
 }

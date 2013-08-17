@@ -32,8 +32,22 @@ $ ->
   $('#button-encrypt').click ()->
     plainText = $('#popup-textarea').val()
 
+    master_password = prompt "Master password to get keys"
+    cipherText = null
+    engine.list_public_keys(master_password, (err, keys) ->
+      if err
+        alert err
+      else
+
+        engine.encrypt(plainText, keys[0][0], (err, encrypted_message) ->
+          cipherText = encrypted_message
+          console.log(cipherText)
+          yes
+        )
+    )
+
     #TODO replace encryption strategy here
-    cipherText = "shh, this is a secret: #{plainText}"
+    $('#popup-textarea').val(cipherText)
 
     #We send the content-script our new ciphertext
     chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
@@ -66,18 +80,27 @@ $ ->
         """
     $('#popup-message-box').html message
 
-  populate_keys = ->
+  populate_keys = (engine) ->
     storage = window.localStorage
     if not (storage['crypto-chrome-pub'] or storage['crypto-chrome-priv'])
       return alert "You must initiate the storage first by visiting the setting page"
 
-
     master_password = prompt "Master password to get keys"
+    if not master_password
+      master_password = prompt "Master password to retrieve keys"
     try
-      pub_keys = JSON.parse(sjcl.decrypt(master_password, storage['crypto-chrome-pub']))
-      priv_keys = JSON.parse(sjcl.decrypt(master_password, storage['crypto-chrome-priv']))
+      pub_keys = null
+      priv_keys = null
+      engine.list_public_keys(master_password, (err, keys) ->
+        pub_keys = keys
+      )
+      engine.list_private_keys(master_password, (err, keys) ->
+        priv_keys = keys
+      )
     catch e
       alert "Failed to decrypt storage"
+      throw e
+
     $("select").empty()
     i = 0
     for key in pub_keys
@@ -90,4 +113,4 @@ $ ->
       $("#private").append("<option value='" + i + "'>" + name + "</option>");
       i++
 
-  populate_keys()
+  populate_keys(engine)
