@@ -14,8 +14,8 @@ module.exports = (grunt)->
       compile:
         files:
           'dist/js/crypto-popup.js' : ['src/coffee/crypto-popup.coffee']
+          'dist/js/crypto-settings.js' : ['src/coffee/crypto-settings.coffee']
           'dist/js/background.js' : ['src/coffee/background.coffee']
-          'dist/js/cs-gmail.js' : ['src/coffee/cs-gmail.coffee']
         options:
           bare: true
 
@@ -48,6 +48,12 @@ module.exports = (grunt)->
         files: [expand: true, flatten: true, src: ['src/images/*'], dest: 'dist/images/']
       js:
         files: [expand: true, flatten: true, src: ['src/js/*'], dest: 'dist/js/']
+      bootstrap:
+        files: [src: ['bower_components/bootstrap/dist/css/bootstrap.min.css'], dest: 'dist/css/bootstrap.min.css']
+      fontawesome:
+        files: [src: ['bower_components/font-awesome/css/font-awesome.min.css'], dest: 'dist/css/font-awesome.min.css']
+      font:
+        files: [expand:true, flatten:true, src: ['bower_components/font-awesome/font/*'], dest: 'dist/font/']
 
     karma:
       unit:
@@ -78,5 +84,6 @@ module.exports = (grunt)->
 
   grunt.registerTask 'default', ['bower', 'compile', 'copy-resources']
   grunt.registerTask 'compile', ['coffee:compile', 'stylus:compile', 'jade:html']
-  grunt.registerTask 'copy-resources',  ['concat', 'copy:img', 'copy:manifest']
+  grunt.registerTask 'build', ['compile', 'copy-resources']
+  grunt.registerTask 'copy-resources',  ['concat', 'copy:img', 'copy:manifest', 'copy:bootstrap', 'copy:fontawesome', 'copy:font', 'copy:js']
   grunt.registerTask 'test', ['karma:unit']
