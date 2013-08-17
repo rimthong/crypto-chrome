@@ -2,11 +2,15 @@ $(document).ready(function(){
 
     setText = function (message){
 
+        target = $("#ComposeRteEditor");
+        target.text(message);
+
     };
 
     getText = function (){
 
-        return "nope";
+        target = $("#ComposeRteEditor");
+        return target.text();
 
     };
 
