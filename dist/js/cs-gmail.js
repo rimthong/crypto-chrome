@@ -45,7 +45,7 @@ $(document).ready(function(){
             sendResponse({status: "ok"});
             setText(request.message);
           } else if (request.fonction && request.fonction === "retrieveLast"){
-            sendResponse({status: "ok", text:getLastMessage(), sender:getLastSender()});
+            sendResponse({status: "ok", text:getLastMessage()});
           }
 
     }); 
