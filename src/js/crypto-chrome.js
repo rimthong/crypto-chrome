@@ -1,4 +1,4 @@
-function crypto-chrome() {
+function crypto_chrome() {
   this.openpgp = openpgp.init();
 
   /**
