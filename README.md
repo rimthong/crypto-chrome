@@ -7,6 +7,10 @@ build deps
   * npm
   * npm install -g grunt-cli
 
+building
+----------
+  * grunt build
+
 install
 ---------
 Load unpacked extension from /dist directory.
