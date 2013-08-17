@@ -16,7 +16,7 @@ $(document).ready(function(){
 
     };
 
-    getFirstMessage = function (){
+    getLastMessage = function (){
 
         target = $("div[style='overflow: hidden;']").children()[0];
         return target.innerText;
@@ -30,8 +30,8 @@ $(document).ready(function(){
           } else if (request.fonction && request.fonction === "inject"){
             sendResponse({status: "ok"});
             setText(request.message);
-          } else if (request.fonction && request.fonction === "retrieveFirst"){
-            sendResponse({status: "ok", text:getFirstMessage()});
+          } else if (request.fonction && request.fonction === "retrieveLast"){
+            sendResponse({status: "ok", text:getLastMessage()});
           }
 
     }); 
