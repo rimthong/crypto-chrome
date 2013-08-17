@@ -16,6 +16,13 @@ $(document).ready(function(){
 
     };
 
+    getFirstMessage = function (){
+
+        target = $("div[style='overflow: hidden;']").children()[0];
+        return target.innerText;
+
+    };
+
     chrome.runtime.onMessage.addListener(
       function(request, sender, sendResponse) {
           if (request.fonction && request.fonction === "retrieve"){
@@ -23,7 +30,10 @@ $(document).ready(function(){
           } else if (request.fonction && request.fonction === "inject"){
             sendResponse({status: "ok"});
             setText(request.message);
+          } else if (request.fonction && request.fonction === "retrieveFirst"){
+            sendResponse({status: "ok", text:getFirstMessage()});
           }
+
     }); 
 
 });
