@@ -38,6 +38,7 @@ $ ->
         alert err
       else
         engine.sign(plainText, keys[index], prompt("Private key passphrase"), master_password, (err, signed_message) ->
+          $('#popup-textarea').val(cipherText)
           #We send the content-script our signed text
           chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
             chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: signedText}, (response)->
