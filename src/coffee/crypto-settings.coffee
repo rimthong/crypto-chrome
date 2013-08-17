@@ -2,13 +2,31 @@ $ ->
   engine = cryptochrome()
   console.log "Loaded settings page"
 
-  keys = read_storage null
+  read_keys = (master_password) ->
+    keys = read_storage master_password
+    pub_keys = keys[0]
+    priv_keys = keys[1]
+
+    $("#public tbody, #private tbody").empty()
+    for key in pub_keys
+      name = key[0].userIds[0].text
+      $("#public tbody").append("<tr><td><img src='http://placekitten.com/30/30' /></td><td>" + name + "</td><td><button class='btn btn-danger remove-public-key'><i class='icon-minus'></i> Remove</button></td></tr>")
+
+    for key in priv_keys
+      name = key[0].userIds[0].text
+      $("#private tbody").append("<tr><td><img src='http://placekitten.com/30/30' /></td><td>" + name + "</td><td><button class='btn btn-danger remove-public-key'><i class='icon-minus'></i> Remove</button></td></tr>")
+
+
+  read_keys()
 
   $('#add-public-key').click ()->
     key = $('#public-key-to-add').val()
     master_password = prompt "Master password to add private key"
     engine.add_public_key_from_armored master_password, key, (err) ->
-      console.log err
+      if err
+        console.log err
+      else
+        read_keys(master_password)
 
     console.log "Adding pubkey #{key}"
     yes
@@ -17,7 +35,10 @@ $ ->
     key = $('#private-key-to-add').val()
     master_password = prompt "Master password to add private key"
     engine.add_private_key_from_armored master_password, key, (err) ->
-      console.log err
+      if err
+        console.log err
+      else
+        read_keys(master_password)
     console.log "Adding private #{key}"
     yes
 

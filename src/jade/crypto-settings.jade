@@ -7,23 +7,13 @@ body
     h1 crypto-chrome
 
     h2 Manage public keys
-    table.table
+    table.table#public
       thead
         tr
           th Image
-          th Email
-          th Hash
+          th ID
           th Manage
       tbody
-        tr
-          td
-            img(src="http://placekitten.com/30/30")
-          td rimthong@gmail.com
-          td AAAAB3NzaC1yc2EAAAADAQABAAABAQDDc4UdaERZ GitHub@bushibytes
-          td 
-            button.btn.btn-danger.remove-public-key
-              i.icon-minus
-              |  Remove
     form.form
       a#add-public-key.btn.btn-success(href='#public-key-modal', data-toggle='modal')
         i.icon-plus
@@ -32,23 +22,13 @@ body
       textarea#public-key-to-add(placeholder='paste key')
 
     h2 Manage private keys
-    table.table
+    table.table#private
       thead
         tr
           th Image
-          th Email
-          th Hash
+          th ID
           th Manage
       tbody
-        tr
-          td
-            img(src="http://placekitten.com/30/30")
-          td rimthong@gmail.com
-          td AAAAB3NzaC1yc2EAAAADAQABAAABAQDDc4UdaERZ
-          td 
-            button.btn.btn-danger.remove-private-key
-              i.icon-minus
-              |  Remove
     form.form
       a#add-private-key.btn.btn-success(href='#private-key-modal', data-toggle='modal')
         i.icon-plus
