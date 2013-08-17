@@ -24,9 +24,12 @@ body
             button.btn.btn-danger.remove-public-key
               i.icon-minus
               |  Remove
-    button#add-public-key.btn.btn-success
-      i.icon-plus
-      |  Add Public Key
+    form.form
+      a#add-public-key.btn.btn-success(href='#public-key-modal', data-toggle='modal')
+        i.icon-plus
+        |  Add Public Key
+      | &nbsp;
+      input#public-key-to-add(type='text', placeholder='paste key')
 
     h2 Manage private keys
     table.table
@@ -46,9 +49,13 @@ body
             button.btn.btn-danger.remove-private-key
               i.icon-minus
               |  Remove
-    button#add-private-key.btn.btn-success
-      i.icon-plus
-      |  Add Private Key
+    form.form
+      a#add-private-key.btn.btn-success(href='#private-key-modal', data-toggle='modal')
+        i.icon-plus
+        |  Add Private Key
+      | &nbsp;
+      input#private-key-to-add(type='text', placeholder='paste key')
+
   script(src="../js/vendor.js")
   script(src="../js/crypto-settings.js")
   script(src="../js/crypto-chrome.js")

@@ -21,7 +21,7 @@ module.exports = (grunt)->
 
     concat:
       js:
-        src: ['bower_components/jquery/jquery.js']
+        src: ['bower_components/jquery/jquery.js', 'bower_components/bootstrap/dist/js/bootstrap.js']
         dest: 'dist/js/vendor.js'
       background:
         src: ['vendor/openpgp/openpgp.min.js']
