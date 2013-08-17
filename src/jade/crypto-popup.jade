@@ -1,12 +1,42 @@
 head
+  link(rel='stylesheet', href='../css/bootstrap.min.css')
+  link(rel='stylesheet', href='../css/font-awesome.min.css')
   link(rel='stylesheet', href='../css/crypto-style.css')
 body
-  p Crypt/Decrypt something!
-  form.form
-    textarea(placeholder="paste text here")
-    button.btn Encrypt
-    button.btn Decrypt
-    button.btn Sign
-    button.btn Verify Signature
+  #popup-body
+    .container
+      h1 crypto-chrome
+      form.form
+        textarea#popup-textarea(placeholder="paste text here",rows='10', cols='42')
+      .well
+        .row-fluid
+          label 
+            i.icon-user
+            |  Private key (you)
+        .row-fluid
+          select
+            option Alex (rimthong@gmail)
+        .row-fluid.action-buttons
+          button#button-decrypt.btn.btn-warning
+            i.icon-unlock
+            |  Decrypt
+          button#button-sign.btn.btn-info
+            i.icon-check
+            |  Sign
+      .well
+        .row-fluid
+          label
+            i.icon-group
+            |  Public key (correspondent)
+        .row-fluid
+          select
+            option Alex (rimthong@gmail)
+        .row-fluid.action-buttons
+          button#button-encrypt.btn.btn-warning
+            i.icon-lock
+            |  Encrypt
+          button#button-verify.btn.btn-info
+            i.icon-check
+            |  Verify Signature
   script(src="../js/vendor.js")
   script(src="../js/crypto-popup.js")
