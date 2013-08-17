@@ -7,7 +7,7 @@ $ ->
     priv_keys = keys[1]
 
     $("#public tbody, #private tbody").empty()
-    if pub_keys.length > 0
+    if pub_keys and pub_keys.length > 0
       i = 0
       for key in pub_keys
         name = openpgp_encoding_html_encode(key[0].userIds[0].text)
@@ -15,7 +15,7 @@ $ ->
         $("#public tbody").append("<tr><td>" + i + "</td><td><img src='http://www.gravatar.com/avatar/#{hash}?d=identicon&s=40' /></td><td>" + name + "</td><td><button class='btn btn-danger btn-small remove-public-key' data-index='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>")
         i++
 
-    if priv_keys.klength > 0
+    if priv_keys and priv_keys.length > 0
       i = 0
       for key in priv_keys
         name = openpgp_encoding_html_encode(key[0].userIds[0].text)

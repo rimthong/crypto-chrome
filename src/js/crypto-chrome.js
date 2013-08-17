@@ -65,7 +65,7 @@ function cryptochrome() {
     if(armored_keys) {
       keys = []
       for (var i = 0; i < armored_keys.length; i++) {
-        keys.push(openpgp.read_publicKey(armored_keys[0]));
+        keys.push(openpgp.read_publicKey(armored_keys[i]));
       }
       return callback(null, keys);
     }
@@ -94,7 +94,7 @@ function cryptochrome() {
     if(armored_keys) {
       keys = []
       for (var i = 0; i < armored_keys.length; i++) {
-        keys.push(openpgp.read_privateKey(armored_keys[0]));
+        keys.push(openpgp.read_privateKey(armored_keys[i]));
       }
       return callback(null, keys);
     }
@@ -118,7 +118,6 @@ function cryptochrome() {
   }
   this.add_private_key_from_armored = add_private_key_from_armored;
 
-  /*
   function find_key_by_email(master_password, email, callback) {
     return this.list_public_keys(master_password, function(err, keys) {
       if(err) {
@@ -137,8 +136,8 @@ function cryptochrome() {
     });
   }
   this.find_key_by_email = find_key_by_email;
-  */
 
+  /*
   function find_private_key_by_id(master_password, id, callback) {
     return this.list_private_keys(master_password, function(err, keys) {
       if(err) {
@@ -151,10 +150,6 @@ function cryptochrome() {
           results.push({ key: keys[i], keymaterial: keys[i][0].jprivateKeyPacket});
           break;
         }
-        /* 
-         * @TODO subkeys
-         */
-        /*
         if(keys[i][0].subKeys != null) {
           var subkeyids = this.privateKeys[i][0].getSubKeyIds();
           for(var j = 0; j <= subkeyids.length; j++) {
@@ -163,34 +158,26 @@ function cryptochrome() {
             }
           }
         }
-        */
       }
       return callback(null, results);
     });
   }
   this.find_private_key_by_id = find_private_key_by_id;
+  */
 
   function delete_public_key_by_index(master_password, index, callback) {
-    return this.list_public_keys(master_password, function(err, keys) {
-      if(err) {
-        return callback(err);
-      }
-      keys.splice(index, 1);
-      window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys));
-      callback(null);
-    });
+    var armored_keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']));
+    armored_keys.splice(index, 1);
+    window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(armored_keys));
+    callback(null);
   }
   this.delete_public_key_by_index = delete_public_key_by_index;
 
   function delete_private_key_by_index(master_password, index, callback) {
-    return this.list_private_keys(master_password, function(err, keys) {
-      if(err) {
-        return callback(err);
-      }
-      keys.splice(index, 1);
-      window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(keys));
-      callback(null);
-    });
+    var armored_keys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']));
+    armored_keys.splice(index, 1);
+    window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(armored_keys));
+    callback(null);
   }
   this.delete_private_key_by_index = delete_private_key_by_index;
 
