@@ -9,6 +9,7 @@ build deps
 
 building
 ----------
+  * grunt bower
   * grunt build
 
 install
