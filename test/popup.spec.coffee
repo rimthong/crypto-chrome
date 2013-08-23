@@ -12,7 +12,7 @@ describe 'In the browser popup', ->
     privateKey = 'My Key'
     cipher = textEncrypt(message, publicKey)
     expect(cipher).toNotEqual(message)
-    expect(textDecrypt(cipher, privateKey)),toEqual(message)
+    expect(textDecrypt(cipher, privateKey)).toEqual(message)
 
   it 'should allow you to sign a message and verify the signature', ->
     message = 'This is a secret.'
@@ -20,5 +20,4 @@ describe 'In the browser popup', ->
     privateKey = 'My Key'
     signature = textSign(message, privateKey)
     expect(signature).toBeTruthy()
-    expect(verifySignature(signature, publicKey)),toBeTruthy()
-
+    expect(verifySignature(signature, publicKey)).toBeTruthy()
