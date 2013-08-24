@@ -1,6 +1,50 @@
 $ ->
   engine = cryptochrome()
 
+  $('#button-submit-add-public-key').click ()->
+    $('#modal-add-public-key').modal('hide')
+    password = $('#input-add-public-key-password').val()
+    key = $('#input-add-public-key-key').val()
+    $('#input-add-public-key-password').val('')
+    $('#input-add-public-key-key').val('')
+    addPublicKey(password, key)
+
+  $('.button-close-add-public-key').click ()->
+    $('#modal-add-public-key').modal('hide')
+
+  $('#button-submit-add-private-key').click ()->
+    $('#modal-add-private-key').modal('hide')
+    password = $('#input-add-private-key-password').val()
+    key = $('#input-add-private-key-key').val()
+    $('#input-add-private-key-password').val('')
+    $('#input-add-private-key-key').val('')
+    addPrivateKey(password, key)
+
+  $('.button-close-add-private-key').click ()->
+    $('#modal-add-private-key').modal('hide')
+
+  $('#button-remove-private-key').click ()->
+    $('#modal-remove-private-key').modal('hide')
+    password = $('#input-remove-private-key-password').val()
+    index = $('#private-key-to-remove-index').val()
+    $('#input-remove-private-key-password').val('')
+    $('#private-key-to-remove-index').val('')
+    removePrivateKey(password, index)
+
+  $('.button-close-remove-private-key').click ()->
+    $('#modal-remove-private-key').modal('hide')
+
+  $('#button-remove-public-key').click ()->
+    $('#modal-remove-public-key').modal('hide')
+    password = $('#input-remove-public-key-password').val()
+    index = $('#public-key-to-remove-index').val()
+    $('#input-remove-public-key-password').val()
+    $('#public-key-to-remove-index').val()
+    removePublicKey(password, index)
+
+  $('.button-close-remove-public-key').click ()->
+    $('#modal-remove-public-key').modal('hide')
+
   read_keys = (master_password) ->
     keys = read_storage master_password, engine
     pub_keys = keys[0]
@@ -12,7 +56,18 @@ $ ->
       for key in pub_keys
         name = openpgp_encoding_html_encode(key[0].userIds[0].text)
         hash = CryptoJS.MD5(key[0].data)
-        $("#public tbody").append("<tr><td>" + i + "</td><td><img src='http://www.gravatar.com/avatar/#{hash}?d=identicon&s=40' /></td><td>" + name + "</td><td><button class='btn btn-danger btn-small remove-public-key' data-index='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>")
+        $("#public tbody").append """
+           <tr>
+             <td>#{i}</td>
+             <td><img src='http://www.gravatar.com/avatar/#{hash}?d=identicon&s=40' /></td>
+             <td>#{name}</td>
+             <td>
+               <button class='btn btn-danger btn-small remove-public-key' data-index='#{i}' data-name='#{name}'>
+                 <i class='icon-minus'></i> Remove
+               </button>
+             </td>
+           </tr>
+          """
         i++
 
     if priv_keys and priv_keys.length > 0
@@ -20,51 +75,71 @@ $ ->
       for key in priv_keys
         name = openpgp_encoding_html_encode(key[0].userIds[0].text)
         hash = CryptoJS.MD5(key[0].data)
-        $("#private tbody").append("<tr><td>" + i + "</td><td><img src='http://www.gravatar.com/avatar/#{hash}?d=identicon&s=40' /></td><td>" + name + "</td><td><button class='btn btn-danger btn-small remove-private-key' data-index='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>")
+        $("#private tbody").append """
+          <tr>
+            <td>#{i}</td>
+            <td><img src='http://www.gravatar.com/avatar/#{hash}?d=identicon&s=40' /></td>
+            <td>#{name}</td>
+            <td>
+              <button class='btn btn-danger btn-small remove-private-key' data-index='#{i}' data-name='#{name}'>
+                <i class='icon-minus'></i> Remove
+              </button>
+            </td>
+          </tr>"
+          """
         i++
 
   read_keys()
 
-  $('#add-public-key').click ()->
-    key = $('#public-key-to-add').val()
-    master_password = prompt "Master password to add private key"
+  $('#add-public-key').click ->
+    $('#modal-add-public-key').modal('show')
+
+  addPublicKey = (master_password, key)->
     engine.add_public_key_from_armored master_password, key, (err) ->
       if err
         console.log err
       else
         read_keys(master_password)
-
-    console.log "Adding pubkey #{key}"
     yes
 
-  $('#add-private-key').click ()->
-    key = $('#private-key-to-add').val()
-    master_password = prompt "Master password to add private key"
+  $('#add-private-key').click ->
+    $('#modal-add-private-key').modal('show')
+
+  addPrivateKey = (master_password, key)->
     engine.add_private_key_from_armored master_password, key, (err) ->
       if err
         console.log err
       else
         read_keys(master_password)
-    console.log "Adding private #{key}"
     yes
 
-  $('#private').on('click', '.remove-private-key', ->
-    master_password = prompt "Master password to delete public key"
-    engine.delete_private_key_by_index master_password, parseInt($(this).data('index')), (err) ->
-      if err
-        console.log err
-      else
-        read_keys(master_password)
-    )
+  $('#private').on 'click', '.remove-private-key', ->
+    index = parseInt $(@).data('index')
+    name = $(@).data('name')
+    $('#private-key-to-remove').text(name)
+    $('#private-key-to-remove-index').val(index)
+    $('#modal-remove-private-key').modal('show')
 
-  $('#public').on('click', '.remove-public-key', ->
-    master_password = prompt "Master password to delete public key"
-    engine.delete_public_key_by_index master_password, parseInt($(this).data('index')), (err) ->
+  removePrivateKey = (master_password, keyIndex)->
+    engine.delete_private_key_by_index master_password, keyIndex, (err) ->
       if err
         console.log err
       else
         read_keys(master_password)
-    )
+
+  $('#public').on 'click', '.remove-public-key', ->
+    index = parseInt $(@).data('index')
+    name = $(@).data('name')
+    $('#public-key-to-remove').text(name)
+    $('#public-key-to-remove-index').val(index)
+    $('#modal-remove-public-key').modal('show')
+
+  removePublicKey = (master_password, keyIndex)->
+    engine.delete_public_key_by_index master_password, keyIndex, (err) ->
+      if err
+        console.log err
+      else
+        read_keys(master_password)
 
 read_storage = (master_password, engine) ->
   storage = window.localStorage
@@ -93,3 +168,4 @@ read_storage = (master_password, engine) ->
       throw e
 
   return [pub_keys, priv_keys]
+

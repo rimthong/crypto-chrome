@@ -5,6 +5,106 @@
   <link rel="stylesheet" href="../css/crypto-style.css"/>
 </head>
 <body>
+  <div id="modal-add-public-key" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-add-public-key">&times;</button>
+          <h4 class="modal-title">Adding a Public key</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-add-public-key-password" type="password" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <label>Public key</label>
+              <textarea id="input-add-public-key-key" placeholder="paste key here" rows="10" class="form-control"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-add-public-key btn">Close</button>
+          <button id="button-submit-add-public-key" class="btn btn-success"> <i class="icon-ok"></i>Add Public Key</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-remove-public-key" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-remove-public-key">&times;</button>
+          <h4 class="modal-title">Removing a Public key</h4>
+        </div>
+        <div class="modal-body">
+          <div id="public-key-to-remove"></div>
+          <form class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-remove-public-key-password" type="password" class="form-control"/>
+              <input id="public-key-to-remove-index" type="hidden"/>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-remove-public-key btn">Close</button>
+          <button id="button-remove-public-key" type="button" class="btn btn-danger"><i class="icon-trash"></i>Delete Public Key</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-remove-private-key" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-remove-private-key">&times;</button>
+          <h4 class="modal-title">Removing a Private key</h4>
+        </div>
+        <div class="modal-body">
+          <div id="private-key-to-remove"></div>
+          <form class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-remove-private-key-password" type="password" class="form-control"/>
+              <input id="private-key-to-remove-index" type="hidden"/>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-remove-private-key btn">Close</button>
+          <button id="button-remove-private-key" type="button" class="btn btn-success"><i class="icon-trash"></i> Remove Private Key</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-add-private-key" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-add-private-key">&times;</button>
+          <h4 class="modal-title">Adding a Private key</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-add-private-key-password" type="password" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <label>Private key</label>
+              <textarea id="input-add-private-key-key" placeholder="paste key here" rows="10" class="form-control"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-add-private-key btn">Close</button>
+          <button id="button-submit-add-private-key" type="button" class="btn btn-success"><i class="icon-ok"></i> Add Private Key</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="container">
     <h1>crypto-chrome</h1>
     <h2>Manage public keys</h2>
@@ -19,9 +119,7 @@
       </thead>
       <tbody></tbody>
     </table>
-    <form class="form"><a id="add-public-key" href="#public-key-modal" data-toggle="modal" class="btn btn-success"><i class="icon-plus"></i> Add Public Key</a>&nbsp;
-      <textarea id="public-key-to-add" placeholder="paste key"></textarea>
-    </form>
+    <form class="form"><a id="add-public-key" href="#public-key-modal" data-toggle="modal" class="btn btn-success"><i class="icon-plus"></i> Add Public Key</a></form>
     <h2>Manage private keys</h2>
     <table id="private" class="table">
       <thead>
@@ -34,9 +132,7 @@
       </thead>
       <tbody></tbody>
     </table>
-    <form class="form"><a id="add-private-key" href="#private-key-modal" data-toggle="modal" class="btn btn-success"><i class="icon-plus"></i> Add Private Key</a>&nbsp;
-      <textarea id="private-key-to-add" placeholder="paste key"></textarea>
-    </form>
+    <form class="form"><a id="add-private-key" href="#private-key-modal" data-toggle="modal" class="btn btn-success"><i class="icon-plus"></i> Add Private Key</a></form>
   </div>
   <script src="../js/vendor.js"></script>
   <script src="../js/md5.js"></script>

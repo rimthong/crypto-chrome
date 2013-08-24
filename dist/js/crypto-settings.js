@@ -1,8 +1,56 @@
 var read_storage;
 
 $(function() {
-  var engine, read_keys;
+  var addPrivateKey, addPublicKey, engine, read_keys, removePrivateKey, removePublicKey;
   engine = cryptochrome();
+  $('#button-submit-add-public-key').click(function() {
+    var key, password;
+    $('#modal-add-public-key').modal('hide');
+    password = $('#input-add-public-key-password').val();
+    key = $('#input-add-public-key-key').val();
+    $('#input-add-public-key-password').val('');
+    $('#input-add-public-key-key').val('');
+    return addPublicKey(password, key);
+  });
+  $('.button-close-add-public-key').click(function() {
+    return $('#modal-add-public-key').modal('hide');
+  });
+  $('#button-submit-add-private-key').click(function() {
+    var key, password;
+    $('#modal-add-private-key').modal('hide');
+    password = $('#input-add-private-key-password').val();
+    key = $('#input-add-private-key-key').val();
+    $('#input-add-private-key-password').val('');
+    $('#input-add-private-key-key').val('');
+    return addPrivateKey(password, key);
+  });
+  $('.button-close-add-private-key').click(function() {
+    return $('#modal-add-private-key').modal('hide');
+  });
+  $('#button-remove-private-key').click(function() {
+    var index, password;
+    $('#modal-remove-private-key').modal('hide');
+    password = $('#input-remove-private-key-password').val();
+    index = $('#private-key-to-remove-index').val();
+    $('#input-remove-private-key-password').val('');
+    $('#private-key-to-remove-index').val('');
+    return removePrivateKey(password, index);
+  });
+  $('.button-close-remove-private-key').click(function() {
+    return $('#modal-remove-private-key').modal('hide');
+  });
+  $('#button-remove-public-key').click(function() {
+    var index, password;
+    $('#modal-remove-public-key').modal('hide');
+    password = $('#input-remove-public-key-password').val();
+    index = $('#public-key-to-remove-index').val();
+    $('#input-remove-public-key-password').val();
+    $('#public-key-to-remove-index').val();
+    return removePublicKey(password, index);
+  });
+  $('.button-close-remove-public-key').click(function() {
+    return $('#modal-remove-public-key').modal('hide');
+  });
   read_keys = function(master_password) {
     var hash, i, key, keys, name, priv_keys, pub_keys, _i, _j, _len, _len1, _results;
     keys = read_storage(master_password, engine);
@@ -15,7 +63,7 @@ $(function() {
         key = pub_keys[_i];
         name = openpgp_encoding_html_encode(key[0].userIds[0].text);
         hash = CryptoJS.MD5(key[0].data);
-        $("#public tbody").append("<tr><td>" + i + ("</td><td><img src='http://www.gravatar.com/avatar/" + hash + "?d=identicon&s=40' /></td><td>") + name + "</td><td><button class='btn btn-danger btn-small remove-public-key' data-index='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>");
+        $("#public tbody").append("<tr>\n  <td>" + i + "</td>\n  <td><img src='http://www.gravatar.com/avatar/" + hash + "?d=identicon&s=40' /></td>\n  <td>" + name + "</td>\n  <td>\n    <button class='btn btn-danger btn-small remove-public-key' data-index='" + i + "' data-name='" + name + "'>\n      <i class='icon-minus'></i> Remove\n    </button>\n  </td>\n</tr>");
         i++;
       }
     }
@@ -26,7 +74,7 @@ $(function() {
         key = priv_keys[_j];
         name = openpgp_encoding_html_encode(key[0].userIds[0].text);
         hash = CryptoJS.MD5(key[0].data);
-        $("#private tbody").append("<tr><td>" + i + ("</td><td><img src='http://www.gravatar.com/avatar/" + hash + "?d=identicon&s=40' /></td><td>") + name + "</td><td><button class='btn btn-danger btn-small remove-private-key' data-index='" + i + "'><i class='icon-minus'></i> Remove</button></td></tr>");
+        $("#private tbody").append("<tr>\n  <td>" + i + "</td>\n  <td><img src='http://www.gravatar.com/avatar/" + hash + "?d=identicon&s=40' /></td>\n  <td>" + name + "</td>\n  <td>\n    <button class='btn btn-danger btn-small remove-private-key' data-index='" + i + "' data-name='" + name + "'>\n      <i class='icon-minus'></i> Remove\n    </button>\n  </td>\n</tr>\"");
         _results.push(i++);
       }
       return _results;
@@ -34,9 +82,9 @@ $(function() {
   };
   read_keys();
   $('#add-public-key').click(function() {
-    var key, master_password;
-    key = $('#public-key-to-add').val();
-    master_password = prompt("Master password to add private key");
+    return $('#modal-add-public-key').modal('show');
+  });
+  addPublicKey = function(master_password, key) {
     engine.add_public_key_from_armored(master_password, key, function(err) {
       if (err) {
         return console.log(err);
@@ -44,13 +92,12 @@ $(function() {
         return read_keys(master_password);
       }
     });
-    console.log("Adding pubkey " + key);
     return true;
-  });
+  };
   $('#add-private-key').click(function() {
-    var key, master_password;
-    key = $('#private-key-to-add').val();
-    master_password = prompt("Master password to add private key");
+    return $('#modal-add-private-key').modal('show');
+  });
+  addPrivateKey = function(master_password, key) {
     engine.add_private_key_from_armored(master_password, key, function(err) {
       if (err) {
         return console.log(err);
@@ -58,31 +105,42 @@ $(function() {
         return read_keys(master_password);
       }
     });
-    console.log("Adding private " + key);
     return true;
-  });
+  };
   $('#private').on('click', '.remove-private-key', function() {
-    var master_password;
-    master_password = prompt("Master password to delete public key");
-    return engine.delete_private_key_by_index(master_password, parseInt($(this).data('index')), function(err) {
+    var index, name;
+    index = parseInt($(this).data('index'));
+    name = $(this).data('name');
+    $('#private-key-to-remove').text(name);
+    $('#private-key-to-remove-index').val(index);
+    return $('#modal-remove-private-key').modal('show');
+  });
+  removePrivateKey = function(master_password, keyIndex) {
+    return engine.delete_private_key_by_index(master_password, keyIndex, function(err) {
       if (err) {
         return console.log(err);
       } else {
         return read_keys(master_password);
       }
     });
+  };
+  $('#public').on('click', '.remove-public-key', function() {
+    var index, name;
+    index = parseInt($(this).data('index'));
+    name = $(this).data('name');
+    $('#public-key-to-remove').text(name);
+    $('#public-key-to-remove-index').val(index);
+    return $('#modal-remove-public-key').modal('show');
   });
-  return $('#public').on('click', '.remove-public-key', function() {
-    var master_password;
-    master_password = prompt("Master password to delete public key");
-    return engine.delete_public_key_by_index(master_password, parseInt($(this).data('index')), function(err) {
+  return removePublicKey = function(master_password, keyIndex) {
+    return engine.delete_public_key_by_index(master_password, keyIndex, function(err) {
       if (err) {
         return console.log(err);
       } else {
         return read_keys(master_password);
       }
     });
-  });
+  };
 });
 
 read_storage = function(master_password, engine) {
