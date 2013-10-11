@@ -3,6 +3,98 @@ head
   link(rel='stylesheet', href='../css/font-awesome.min.css')
   link(rel='stylesheet', href='../css/crypto-style.css')
 body
+  #modal-encrypt.modal.fade
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close.button-close-encrypt(type='button',aria-hidden='true')&times;
+          h4.modal-title Encrypt message
+        .modal-body
+          form.form
+            .form-group
+              label Master Password
+              input#input-encrypt-master-password.form-control(type='password')
+            .form-group
+              label Choose a key
+              select#select-encrypt-public-key.select-public-key.form-control
+        .modal-footer
+          button.button-close-encrypt.btn Cancel
+          button#button-confirm-encrypt.btn.btn-success 
+            i.icon-lock
+            |  Encrypt
+  #modal-verify.modal.fade
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close.button-close-verify(type='button',aria-hidden='true')&times;
+          h4.modal-title Verify message signature
+        .modal-body
+          p.text-muted Message signature not yet implemented.
+        .modal-footer
+          button.button-close-verify.btn Cancel
+          button#button-confirm-verify.btn.btn-success 
+            i.icon-check
+            |  Verify
+  #modal-sign.modal.fade
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close.button-close-sign(type='button',aria-hidden='true')&times;
+          h4.modal-title Sign message
+        .modal-body
+          form.form
+            .form-group
+              label Master Password
+              input#input-sign-master-password.form-control(type='password')
+            .form-group
+              label Choose a private key
+              select#select-sign-private-key.select-private-key.form-control
+            .form-group
+              label Enter private key password
+              input#input-sign-private-password.form-control(type='password')
+        .modal-footer
+          button.button-close-sign.btn Cancel
+          button#button-confirm-sign.btn.btn-success 
+            i.icon-check
+            |  Sign
+  #modal-decrypt.modal.fade
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close.button-close-decrypt(type='button',aria-hidden='true')&times;
+          h4.modal-title Decrypt message
+        .modal-body
+          form.form
+            .form-group
+              label Master Password
+              input#input-decrypt-master-password.form-control(type='password')
+            .form-group
+              label Choose a private key
+              select#select-decrypt-private-key.select-private-key.form-control
+            .form-group
+              label Enter private key password
+              input#input-decrypt-private-password.form-control(type='password')
+        .modal-footer
+          button.button-close-decrypt.btn Cancel
+          button#button-confirm-decrypt.btn.btn-success 
+            i.icon-unlock
+            |  Decrypt
+  #modal-enter-master-password.modal.fade
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close.button-close-enter-master-password(type='button',aria-hidden='true')&times;
+          h4.modal-title Unlock key storage
+        .modal-body
+          form.form
+            .form-group
+              label Master Password
+              input#input-entered-master-password.form-control(type='password')
+        .modal-footer
+          button.button-close-enter-master-password.btn Cancel
+          button#button-confirm-enter-master-password.btn.btn-success 
+            i.icon-ok
+            |  Unlock
   #popup-body
     .container
       h1 crypto-chrome
@@ -16,28 +108,15 @@ body
         i.icon-cloud-download
         |  Import last message
       .well.first-well
-        .row-fluid
-          label
-            i.icon-group
-            |  Public key (correspondent)
-        .row-fluid
-          select#public
-        .row-fluid.action-buttons
+        .row.action-buttons
           button#button-encrypt.btn.btn-warning
             i.icon-lock
             |  Encrypt
           button#button-verify.btn.btn-info
             i.icon-check
             |  Verify Signature
-
       .well
-        .row-fluid
-          label 
-            i.icon-user
-            |  Private key (you)
-        .row-fluid
-          select#private
-        .row-fluid.action-buttons
+        .row.action-buttons
           button#button-decrypt.btn.btn-warning
             i.icon-unlock
             |  Decrypt

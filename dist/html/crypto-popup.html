@@ -5,6 +5,131 @@
   <link rel="stylesheet" href="../css/crypto-style.css"/>
 </head>
 <body>
+  <div id="modal-encrypt" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-encrypt">&times;</button>
+          <h4 class="modal-title">Encrypt message</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-encrypt-master-password" type="password" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <label>Choose a key</label>
+              <select id="select-encrypt-public-key" class="select-public-key form-control"></select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-encrypt btn">Cancel</button>
+          <button id="button-confirm-encrypt" class="btn btn-success"> <i class="icon-lock"></i> Encrypt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-verify" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-verify">&times;</button>
+          <h4 class="modal-title">Verify message signature</h4>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted">Message signature not yet implemented.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-verify btn">Cancel</button>
+          <button id="button-confirm-verify" class="btn btn-success"> <i class="icon-check"></i> Verify</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-sign" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-sign">&times;</button>
+          <h4 class="modal-title">Sign message</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-sign-master-password" type="password" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <label>Choose a private key</label>
+              <select id="select-sign-private-key" class="select-private-key form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Enter private key password</label>
+              <input id="input-sign-private-password" type="password" class="form-control"/>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-sign btn">Cancel</button>
+          <button id="button-confirm-sign" class="btn btn-success"> <i class="icon-check"></i> Sign</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-decrypt" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-decrypt">&times;</button>
+          <h4 class="modal-title">Decrypt message</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-decrypt-master-password" type="password" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <label>Choose a private key</label>
+              <select id="select-decrypt-private-key" class="select-private-key form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Enter private key password</label>
+              <input id="input-decrypt-private-password" type="password" class="form-control"/>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-decrypt btn">Cancel</button>
+          <button id="button-confirm-decrypt" class="btn btn-success"> <i class="icon-unlock"></i> Decrypt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-enter-master-password" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-enter-master-password">&times;</button>
+          <h4 class="modal-title">Unlock key storage</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-entered-master-password" type="password" class="form-control"/>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-enter-master-password btn">Cancel</button>
+          <button id="button-confirm-enter-master-password" class="btn btn-success"> <i class="icon-ok"></i> Unlock</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="popup-body">
     <div class="container">
       <h1>crypto-chrome</h1>
@@ -15,25 +140,13 @@
       <button id="button-import-textarea" class="btn btn-success"><i class="icon-cloud-download"></i> Import from page</button>
       <button id="button-import-message-textarea" class="btn btn-success"><i class="icon-cloud-download"></i> Import last message</button>
       <div class="well first-well">
-        <div class="row-fluid">
-          <label><i class="icon-group"></i> Public key (correspondent)</label>
-        </div>
-        <div class="row-fluid">
-          <select id="public"></select>
-        </div>
-        <div class="row-fluid action-buttons">
+        <div class="row action-buttons">
           <button id="button-encrypt" class="btn btn-warning"><i class="icon-lock"></i> Encrypt</button>
           <button id="button-verify" class="btn btn-info"><i class="icon-check"></i> Verify Signature</button>
         </div>
       </div>
       <div class="well">
-        <div class="row-fluid">
-          <label> <i class="icon-user"></i> Private key (you)</label>
-        </div>
-        <div class="row-fluid">
-          <select id="private"></select>
-        </div>
-        <div class="row-fluid action-buttons">
+        <div class="row action-buttons">
           <button id="button-decrypt" class="btn btn-warning"><i class="icon-unlock"></i> Decrypt</button>
           <button id="button-sign" class="btn btn-info"><i class="icon-check"></i> Sign</button>
         </div>

@@ -174,9 +174,6 @@ read_storage = function(master_password, engine) {
   var e, priv_keys, pub_keys, storage;
   storage = window.localStorage;
   if (!(storage['crypto-chrome-pub'] || storage['crypto-chrome-priv'])) {
-    if (!master_password) {
-      master_password = prompt("Master password to initialize the storage");
-    }
     if (!storage['crypto-chrome-pub']) {
       storage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify([]));
     }
@@ -184,9 +181,6 @@ read_storage = function(master_password, engine) {
       storage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify([]));
     }
   } else {
-    if (!master_password) {
-      master_password = prompt("Master password to retrieve keys");
-    }
     try {
       pub_keys = null;
       priv_keys = null;

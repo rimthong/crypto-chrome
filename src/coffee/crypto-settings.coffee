@@ -170,15 +170,11 @@ read_storage = (master_password, engine) ->
   storage = window.localStorage
 
   if not (storage['crypto-chrome-pub'] or storage['crypto-chrome-priv'])
-    if not master_password
-      master_password = prompt "Master password to initialize the storage"
     if not storage['crypto-chrome-pub']
       storage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify([]))
     if not storage['crypto-chrome-priv']
       storage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify([]))
   else
-    if not master_password
-      master_password = prompt "Master password to retrieve keys"
     try
       pub_keys = null
       priv_keys = null
