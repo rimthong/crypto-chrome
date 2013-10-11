@@ -45,49 +45,74 @@ $ ->
   $('.button-close-remove-public-key').click ()->
     $('#modal-remove-public-key').modal('hide')
 
+  $('#button-confirm-enter-master-password').click ()->
+    password = $('#input-entered-master-password').val()
+    $('#modal-enter-master-password').modal('hide')
+    read_keys(password)
+
+  $('.button-close-enter-master-password').click ()->
+    $('#modal-enter-master-password').modal('hide')
+
+  $('#button-confirm-initialize-master-password').click ()->
+    password = $('#input-initialized-master-password').val()
+    $('#modal-initialize-master-password').modal('hide')
+    read_keys(password)
+
+  $('.button-close-enter-master-password').click ()->
+    $('#modal-initialize-master-password').modal('hide')
+
   read_keys = (master_password) ->
-    keys = read_storage master_password, engine
-    pub_keys = keys[0]
-    priv_keys = keys[1]
+    if not master_password
+      storage = window.localStorage
+      if not (storage['crypto-chrome-pub'] or storage['crypto-chrome-priv'])
+        #Initialize popup
+        $('#modal-initialize-master-password').modal()
+      else
+        #Master password popup
+        $('#modal-enter-master-password').modal()
+    else
+      keys = read_storage master_password, engine
+      pub_keys = keys[0]
+      priv_keys = keys[1]
 
-    $("#public tbody, #private tbody").empty()
-    if pub_keys and pub_keys.length > 0
-      i = 0
-      for key in pub_keys
-        name = openpgp_encoding_html_encode(key[0].userIds[0].text)
-        hash = CryptoJS.MD5(key[0].data)
-        $("#public tbody").append """
-           <tr>
-             <td>#{i}</td>
-             <td><img src='http://www.gravatar.com/avatar/#{hash}?d=identicon&s=40' /></td>
-             <td>#{name}</td>
-             <td>
-               <button class='btn btn-danger btn-small remove-public-key' data-index='#{i}' data-name='#{name}'>
-                 <i class='icon-minus'></i> Remove
-               </button>
-             </td>
-           </tr>
-          """
-        i++
+      $("#public tbody, #private tbody").empty()
+      if pub_keys and pub_keys.length > 0
+        i = 0
+        for key in pub_keys
+          name = openpgp_encoding_html_encode(key[0].userIds[0].text)
+          hash = CryptoJS.MD5(key[0].data)
+          $("#public tbody").append """
+             <tr>
+               <td>#{i}</td>
+               <td><img src='http://www.gravatar.com/avatar/#{hash}?d=identicon&s=40' /></td>
+               <td>#{name}</td>
+               <td>
+                 <button class='btn btn-danger btn-small remove-public-key' data-index='#{i}' data-name='#{name}'>
+                   <i class='icon-minus'></i> Remove
+                 </button>
+               </td>
+             </tr>
+            """
+          i++
 
-    if priv_keys and priv_keys.length > 0
-      i = 0
-      for key in priv_keys
-        name = openpgp_encoding_html_encode(key[0].userIds[0].text)
-        hash = CryptoJS.MD5(key[0].data)
-        $("#private tbody").append """
-          <tr>
-            <td>#{i}</td>
-            <td><img src='http://www.gravatar.com/avatar/#{hash}?d=identicon&s=40' /></td>
-            <td>#{name}</td>
-            <td>
-              <button class='btn btn-danger btn-small remove-private-key' data-index='#{i}' data-name='#{name}'>
-                <i class='icon-minus'></i> Remove
-              </button>
-            </td>
-          </tr>"
-          """
-        i++
+      if priv_keys and priv_keys.length > 0
+        i = 0
+        for key in priv_keys
+          name = openpgp_encoding_html_encode(key[0].userIds[0].text)
+          hash = CryptoJS.MD5(key[0].data)
+          $("#private tbody").append """
+            <tr>
+              <td>#{i}</td>
+              <td><img src='http://www.gravatar.com/avatar/#{hash}?d=identicon&s=40' /></td>
+              <td>#{name}</td>
+              <td>
+                <button class='btn btn-danger btn-small remove-private-key' data-index='#{i}' data-name='#{name}'>
+                  <i class='icon-minus'></i> Remove
+                </button>
+              </td>
+            </tr>"
+            """
+          i++
 
   read_keys()
 

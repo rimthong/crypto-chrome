@@ -5,6 +5,50 @@
   <link rel="stylesheet" href="../css/crypto-style.css"/>
 </head>
 <body>
+  <div id="modal-enter-master-password" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-enter-master-password">&times;</button>
+          <h4 class="modal-title">Unlock key storage</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-entered-master-password" type="password" class="form-control"/>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-enter-master-password btn">Cancel</button>
+          <button id="button-confirm-enter-master-password" class="btn btn-success"> <i class="icon-ok"></i>Unlock</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-initialize-master-password" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-initialize-master-password">&times;</button>
+          <h4 class="modal-title">Initialize Cryptochrome</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form">
+            <div class="form-group">
+              <label>Enter a Master Password</label>
+              <input id="input-initialized-master-password" type="password" class="form-control"/>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-initialize-master-password btn">Cancel</button>
+          <button id="button-confirm-initialize-master-password" class="btn btn-success"> <i class="icon-ok"></i>Initialize</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="modal-add-public-key" class="modal fade">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -50,7 +94,7 @@
         </div>
         <div class="modal-footer">
           <button class="button-close-remove-public-key btn">Close</button>
-          <button id="button-remove-public-key" type="button" class="btn btn-danger"><i class="icon-trash"></i>Delete Public Key</button>
+          <button id="button-remove-public-key" type="button" class="btn btn-danger"><i class="icon-trash"></i> Remove Public Key</button>
         </div>
       </div>
     </div>
@@ -74,7 +118,7 @@
         </div>
         <div class="modal-footer">
           <button class="button-close-remove-private-key btn">Close</button>
-          <button id="button-remove-private-key" type="button" class="btn btn-success"><i class="icon-trash"></i> Remove Private Key</button>
+          <button id="button-remove-private-key" type="button" class="btn btn-danger"><i class="icon-trash"></i> Remove Private Key</button>
         </div>
       </div>
     </div>

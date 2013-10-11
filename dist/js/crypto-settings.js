@@ -51,33 +51,60 @@ $(function() {
   $('.button-close-remove-public-key').click(function() {
     return $('#modal-remove-public-key').modal('hide');
   });
+  $('#button-confirm-enter-master-password').click(function() {
+    var password;
+    password = $('#input-entered-master-password').val();
+    $('#modal-enter-master-password').modal('hide');
+    return read_keys(password);
+  });
+  $('.button-close-enter-master-password').click(function() {
+    return $('#modal-enter-master-password').modal('hide');
+  });
+  $('#button-confirm-initialize-master-password').click(function() {
+    var password;
+    password = $('#input-initialized-master-password').val();
+    $('#modal-initialize-master-password').modal('hide');
+    return read_keys(password);
+  });
+  $('.button-close-enter-master-password').click(function() {
+    return $('#modal-initialize-master-password').modal('hide');
+  });
   read_keys = function(master_password) {
-    var hash, i, key, keys, name, priv_keys, pub_keys, _i, _j, _len, _len1, _results;
-    keys = read_storage(master_password, engine);
-    pub_keys = keys[0];
-    priv_keys = keys[1];
-    $("#public tbody, #private tbody").empty();
-    if (pub_keys && pub_keys.length > 0) {
-      i = 0;
-      for (_i = 0, _len = pub_keys.length; _i < _len; _i++) {
-        key = pub_keys[_i];
-        name = openpgp_encoding_html_encode(key[0].userIds[0].text);
-        hash = CryptoJS.MD5(key[0].data);
-        $("#public tbody").append("<tr>\n  <td>" + i + "</td>\n  <td><img src='http://www.gravatar.com/avatar/" + hash + "?d=identicon&s=40' /></td>\n  <td>" + name + "</td>\n  <td>\n    <button class='btn btn-danger btn-small remove-public-key' data-index='" + i + "' data-name='" + name + "'>\n      <i class='icon-minus'></i> Remove\n    </button>\n  </td>\n</tr>");
-        i++;
+    var hash, i, key, keys, name, priv_keys, pub_keys, storage, _i, _j, _len, _len1, _results;
+    if (!master_password) {
+      storage = window.localStorage;
+      if (!(storage['crypto-chrome-pub'] || storage['crypto-chrome-priv'])) {
+        return $('#modal-initialize-master-password').modal();
+      } else {
+        return $('#modal-enter-master-password').modal();
       }
-    }
-    if (priv_keys && priv_keys.length > 0) {
-      i = 0;
-      _results = [];
-      for (_j = 0, _len1 = priv_keys.length; _j < _len1; _j++) {
-        key = priv_keys[_j];
-        name = openpgp_encoding_html_encode(key[0].userIds[0].text);
-        hash = CryptoJS.MD5(key[0].data);
-        $("#private tbody").append("<tr>\n  <td>" + i + "</td>\n  <td><img src='http://www.gravatar.com/avatar/" + hash + "?d=identicon&s=40' /></td>\n  <td>" + name + "</td>\n  <td>\n    <button class='btn btn-danger btn-small remove-private-key' data-index='" + i + "' data-name='" + name + "'>\n      <i class='icon-minus'></i> Remove\n    </button>\n  </td>\n</tr>\"");
-        _results.push(i++);
+    } else {
+      keys = read_storage(master_password, engine);
+      pub_keys = keys[0];
+      priv_keys = keys[1];
+      $("#public tbody, #private tbody").empty();
+      if (pub_keys && pub_keys.length > 0) {
+        i = 0;
+        for (_i = 0, _len = pub_keys.length; _i < _len; _i++) {
+          key = pub_keys[_i];
+          name = openpgp_encoding_html_encode(key[0].userIds[0].text);
+          hash = CryptoJS.MD5(key[0].data);
+          $("#public tbody").append("<tr>\n  <td>" + i + "</td>\n  <td><img src='http://www.gravatar.com/avatar/" + hash + "?d=identicon&s=40' /></td>\n  <td>" + name + "</td>\n  <td>\n    <button class='btn btn-danger btn-small remove-public-key' data-index='" + i + "' data-name='" + name + "'>\n      <i class='icon-minus'></i> Remove\n    </button>\n  </td>\n</tr>");
+          i++;
+        }
       }
-      return _results;
+      if (priv_keys && priv_keys.length > 0) {
+        i = 0;
+        _results = [];
+        for (_j = 0, _len1 = priv_keys.length; _j < _len1; _j++) {
+          key = priv_keys[_j];
+          name = openpgp_encoding_html_encode(key[0].userIds[0].text);
+          hash = CryptoJS.MD5(key[0].data);
+          $("#private tbody").append("<tr>\n  <td>" + i + "</td>\n  <td><img src='http://www.gravatar.com/avatar/" + hash + "?d=identicon&s=40' /></td>\n  <td>" + name + "</td>\n  <td>\n    <button class='btn btn-danger btn-small remove-private-key' data-index='" + i + "' data-name='" + name + "'>\n      <i class='icon-minus'></i> Remove\n    </button>\n  </td>\n</tr>\"");
+          _results.push(i++);
+        }
+        return _results;
+      }
     }
   };
   read_keys();

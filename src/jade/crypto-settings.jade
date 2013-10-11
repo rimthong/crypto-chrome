@@ -3,6 +3,38 @@ head
   link(rel='stylesheet', href='../css/font-awesome.min.css')
   link(rel='stylesheet', href='../css/crypto-style.css')
 body
+  #modal-enter-master-password.modal.fade
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close.button-close-enter-master-password(type='button',aria-hidden='true')&times;
+          h4.modal-title Unlock key storage
+        .modal-body
+          form.form
+            .form-group
+              label Master Password
+              input#input-entered-master-password.form-control(type='password')
+        .modal-footer
+          button.button-close-enter-master-password.btn Cancel
+          button#button-confirm-enter-master-password.btn.btn-success 
+            i.icon-ok
+            | Unlock
+  #modal-initialize-master-password.modal.fade
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close.button-close-initialize-master-password(type='button',aria-hidden='true')&times;
+          h4.modal-title Initialize Cryptochrome
+        .modal-body
+          form.form
+            .form-group
+              label Enter a Master Password
+              input#input-initialized-master-password.form-control(type='password')
+        .modal-footer
+          button.button-close-initialize-master-password.btn Cancel
+          button#button-confirm-initialize-master-password.btn.btn-success 
+            i.icon-ok
+            | Initialize
   #modal-add-public-key.modal.fade
     .modal-dialog
       .modal-content
@@ -39,7 +71,7 @@ body
           button.button-close-remove-public-key.btn Close
           button#button-remove-public-key.btn.btn-danger(type='button')
             i.icon-trash
-            | Delete Public Key
+            |  Remove Public Key
   #modal-remove-private-key.modal.fade
     .modal-dialog
       .modal-content
@@ -55,7 +87,7 @@ body
               input#private-key-to-remove-index(type='hidden')
         .modal-footer
           button.button-close-remove-private-key.btn Close
-          button#button-remove-private-key.btn.btn-success(type='button')
+          button#button-remove-private-key.btn.btn-danger(type='button')
             i.icon-trash
             |  Remove Private Key
   #modal-add-private-key.modal.fade
