@@ -10,13 +10,13 @@ body
           button.close.button-close-enter-master-password(type='button',aria-hidden='true')&times;
           h4.modal-title Unlock key storage
         .modal-body
-          form.form
+          form#form-enter-master-password.form
             .form-group
               label Master Password
               input#input-entered-master-password.form-control(type='password')
         .modal-footer
           button.button-close-enter-master-password.btn Cancel
-          button#button-confirm-enter-master-password.btn.btn-success 
+          button#button-confirm-enter-master-password.btn.btn-success(type='submit', value='submit')
             i.icon-unlock
             |  Unlock
   #modal-initialize-master-password.modal.fade
@@ -26,13 +26,13 @@ body
           button.close.button-close-initialize-master-password(type='button',aria-hidden='true')&times;
           h4.modal-title Initialize Cryptochrome
         .modal-body
-          form.form
+          form#form-initialize-master-password.form
             .form-group
               label Enter a Master Password
               input#input-initialized-master-password.form-control(type='password')
         .modal-footer
           button.button-close-initialize-master-password.btn Cancel
-          button#button-confirm-initialize-master-password.btn.btn-success 
+          button#button-confirm-initialize-master-password.btn.btn-success(type='submit', value='submit')
             i.icon-ok
             |  Initialize
   #modal-add-public-key.modal.fade
@@ -42,7 +42,7 @@ body
           button.close.button-close-add-public-key(type='button',aria-hidden='true')&times;
           h4.modal-title Adding a Public key
         .modal-body
-          form.form
+          form#form-add-public-key.form
             .form-group
               label Master Password
               input#input-add-public-key-password.form-control(type='password')
@@ -51,7 +51,7 @@ body
               textarea#input-add-public-key-key.form-control(placeholder='paste key here', rows=10)
         .modal-footer
           button.button-close-add-public-key.btn Close
-          button#button-submit-add-public-key.btn.btn-success 
+          button#button-submit-add-public-key.btn.btn-success(type='submit', value='submit')
             i.icon-ok
             |  Add Public Key
   #modal-remove-public-key.modal.fade
@@ -62,7 +62,7 @@ body
           h4.modal-title Removing a Public key
         .modal-body
           #public-key-to-remove
-          form.form
+          form#form-remove-public-key.form
             .form-group
               label Master Password
               input#input-remove-public-key-password.form-control(type='password')
@@ -80,7 +80,7 @@ body
           h4.modal-title Removing a Private key
         .modal-body
           #private-key-to-remove
-          form.form
+          form#form-remove-private-key.form
             .form-group
               label Master Password
               input#input-remove-private-key-password.form-control(type='password')
@@ -97,7 +97,7 @@ body
           button.close.button-close-add-private-key(type='button',aria-hidden='true')&times;
           h4.modal-title Adding a Private key
         .modal-body
-          form.form
+          form#form-add-private-key.form
             .form-group
               label Master Password
               input#input-add-private-key-password.form-control(type='password')
@@ -106,7 +106,7 @@ body
               textarea#input-add-private-key-key.form-control(placeholder='paste key here', rows=10)
         .modal-footer
           button.button-close-add-private-key.btn Close
-          button#button-submit-add-private-key.btn.btn-success(type='button')
+          button#button-submit-add-private-key.btn.btn-success(type='submit', value='submit')
             i.icon-ok
             |  Add Private Key
   .container

@@ -1,5 +1,5 @@
 $(function() {
-  var engine, populate_keys;
+  var decrypt, encrypt, engine, enterMasterPassword, populate_keys, sign;
   engine = cryptochrome();
   $('#button-confirm-verify').click(function() {
     return $('#modal-verify').modal('hide');
@@ -7,7 +7,14 @@ $(function() {
   $('.button-close-verify').click(function() {
     return $('#modal-verify').modal('hide');
   });
+  $('#form-sign').submit(function() {
+    event.preventDefault();
+    return sign();
+  });
   $('#button-confirm-sign').click(function() {
+    return sign();
+  });
+  sign = function() {
     var index, key, key_password, master_password, plainText;
     master_password = $('#input-sign-master-password').val();
     key = $('#select-sign-private-key').val();
@@ -40,11 +47,19 @@ $(function() {
         });
       }
     });
-  });
+  };
   $('.button-close-sign').click(function() {
     return $('#modal-sign').modal('hide');
   });
+  $('#form-decrypt').submit(function() {
+    console.log('Form decrypt submit');
+    event.preventDefault();
+    return decrypt();
+  });
   $('#button-confirm-decrypt').click(function() {
+    return decrypt();
+  });
+  decrypt = function() {
     var cipherText, index, key, key_password, master_password;
     master_password = $('#input-decrypt-master-password').val();
     key = $('#select-decrypt-private-key').val();
@@ -61,11 +76,18 @@ $(function() {
         });
       }
     });
-  });
+  };
   $('.button-close-decrypt').click(function() {
     return $('#modal-decrypt').modal('hide');
   });
+  $('#form-encrypt').submit(function() {
+    event.preventDefault();
+    return encrypt();
+  });
   $('#button-confirm-encrypt').click(function() {
+    return encrypt();
+  });
+  encrypt = function() {
     var cipherText, index, key, master_password, plainText;
     master_password = $('#input-encrypt-master-password').val();
     key = $('#select-encrypt-public-key').val();
@@ -100,16 +122,23 @@ $(function() {
         }
       });
     });
-  });
+  };
   $('.button-close-encrypt').click(function() {
     return $('#modal-encrypt').modal('hide');
   });
+  $('#form-enter-master-password').submit(function() {
+    event.preventDefault();
+    return enterMasterPassword();
+  });
   $('#button-confirm-enter-master-password').click(function() {
+    return enterMasterPassword();
+  });
+  enterMasterPassword = function() {
     var password;
     password = $('#input-entered-master-password').val();
     $('#modal-enter-master-password').modal('hide');
     return populate_keys(engine, password);
-  });
+  };
   $('.button-close-enter-master-password').click(function() {
     return $('#modal-enter-master-password').modal('hide');
   });

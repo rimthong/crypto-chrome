@@ -13,7 +13,7 @@
           <h4 class="modal-title">Unlock key storage</h4>
         </div>
         <div class="modal-body">
-          <form class="form">
+          <form id="form-enter-master-password" class="form">
             <div class="form-group">
               <label>Master Password</label>
               <input id="input-entered-master-password" type="password" class="form-control"/>
@@ -22,7 +22,7 @@
         </div>
         <div class="modal-footer">
           <button class="button-close-enter-master-password btn">Cancel</button>
-          <button id="button-confirm-enter-master-password" class="btn btn-success"> <i class="icon-unlock"></i> Unlock</button>
+          <button id="button-confirm-enter-master-password" type="submit" value="submit" class="btn btn-success"><i class="icon-unlock"></i> Unlock</button>
         </div>
       </div>
     </div>
@@ -35,7 +35,7 @@
           <h4 class="modal-title">Initialize Cryptochrome</h4>
         </div>
         <div class="modal-body">
-          <form class="form">
+          <form id="form-initialize-master-password" class="form">
             <div class="form-group">
               <label>Enter a Master Password</label>
               <input id="input-initialized-master-password" type="password" class="form-control"/>
@@ -44,7 +44,7 @@
         </div>
         <div class="modal-footer">
           <button class="button-close-initialize-master-password btn">Cancel</button>
-          <button id="button-confirm-initialize-master-password" class="btn btn-success"> <i class="icon-ok"></i> Initialize</button>
+          <button id="button-confirm-initialize-master-password" type="submit" value="submit" class="btn btn-success"><i class="icon-ok"></i> Initialize</button>
         </div>
       </div>
     </div>
@@ -57,7 +57,7 @@
           <h4 class="modal-title">Adding a Public key</h4>
         </div>
         <div class="modal-body">
-          <form class="form">
+          <form id="form-add-public-key" class="form">
             <div class="form-group">
               <label>Master Password</label>
               <input id="input-add-public-key-password" type="password" class="form-control"/>
@@ -70,7 +70,7 @@
         </div>
         <div class="modal-footer">
           <button class="button-close-add-public-key btn">Close</button>
-          <button id="button-submit-add-public-key" class="btn btn-success"> <i class="icon-ok"></i> Add Public Key</button>
+          <button id="button-submit-add-public-key" type="submit" value="submit" class="btn btn-success"><i class="icon-ok"></i> Add Public Key</button>
         </div>
       </div>
     </div>
@@ -84,7 +84,7 @@
         </div>
         <div class="modal-body">
           <div id="public-key-to-remove"></div>
-          <form class="form">
+          <form id="form-remove-public-key" class="form">
             <div class="form-group">
               <label>Master Password</label>
               <input id="input-remove-public-key-password" type="password" class="form-control"/>
@@ -108,7 +108,7 @@
         </div>
         <div class="modal-body">
           <div id="private-key-to-remove"></div>
-          <form class="form">
+          <form id="form-remove-private-key" class="form">
             <div class="form-group">
               <label>Master Password</label>
               <input id="input-remove-private-key-password" type="password" class="form-control"/>
@@ -131,7 +131,7 @@
           <h4 class="modal-title">Adding a Private key</h4>
         </div>
         <div class="modal-body">
-          <form class="form">
+          <form id="form-add-private-key" class="form">
             <div class="form-group">
               <label>Master Password</label>
               <input id="input-add-private-key-password" type="password" class="form-control"/>
@@ -144,7 +144,7 @@
         </div>
         <div class="modal-footer">
           <button class="button-close-add-private-key btn">Close</button>
-          <button id="button-submit-add-private-key" type="button" class="btn btn-success"><i class="icon-ok"></i> Add Private Key</button>
+          <button id="button-submit-add-private-key" type="submit" value="submit" class="btn btn-success"><i class="icon-ok"></i> Add Private Key</button>
         </div>
       </div>
     </div>

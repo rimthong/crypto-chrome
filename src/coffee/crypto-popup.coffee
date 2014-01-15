@@ -7,7 +7,14 @@ $ ->
   $('.button-close-verify').click ()->
     $('#modal-verify').modal('hide')
 
+  $('#form-sign').submit ()->
+    event.preventDefault()
+    sign()
+
   $('#button-confirm-sign').click ()->
+    sign()
+
+  sign = ()->
     master_password = $('#input-sign-master-password').val()
     key = $('#select-sign-private-key').val()
     key_password = $('#input-sign-private-password').val()
@@ -35,7 +42,14 @@ $ ->
   $('.button-close-sign').click ()->
     $('#modal-sign').modal('hide')
 
+  $('#form-decrypt').submit ()->
+    event.preventDefault()
+    decrypt()
+
   $('#button-confirm-decrypt').click ()->
+    decrypt()
+
+  decrypt = ()->
     master_password = $('#input-decrypt-master-password').val()
     key = $('#select-decrypt-private-key').val()
     key_password = $('#input-decrypt-private-password').val()
@@ -54,7 +68,14 @@ $ ->
   $('.button-close-decrypt').click ()->
     $('#modal-decrypt').modal('hide')
 
+  $('#form-encrypt').submit ()->
+    event.preventDefault()
+    encrypt()
+
   $('#button-confirm-encrypt').click ()->
+    encrypt()
+
+  encrypt = ()->
     master_password = $('#input-encrypt-master-password').val()
     key = $('#select-encrypt-public-key').val()
     $('#modal-encrypt').modal('hide')
@@ -85,7 +106,14 @@ $ ->
   $('.button-close-encrypt').click ()->
     $('#modal-encrypt').modal('hide')
 
+  $('#form-enter-master-password').submit ()->
+    event.preventDefault()
+    enterMasterPassword()
+
   $('#button-confirm-enter-master-password').click ()->
+    enterMasterPassword()
+
+  enterMasterPassword = ()->
     password = $('#input-entered-master-password').val()
     $('#modal-enter-master-password').modal('hide')
     populate_keys(engine, password)

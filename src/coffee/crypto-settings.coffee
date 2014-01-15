@@ -9,10 +9,28 @@ $ ->
     $('#input-add-public-key-key').val('')
     addPublicKey(password, key)
 
+  $('#form-add-public-key').submit ()->
+    event.preventDefault()
+    $('#modal-add-public-key').modal('hide')
+    password = $('#input-add-public-key-password').val()
+    key = $('#input-add-public-key-key').val()
+    $('#input-add-public-key-password').val('')
+    $('#input-add-public-key-key').val('')
+    addPublicKey(password, key)
+
   $('.button-close-add-public-key').click ()->
     $('#modal-add-public-key').modal('hide')
 
   $('#button-submit-add-private-key').click ()->
+    $('#modal-add-private-key').modal('hide')
+    password = $('#input-add-private-key-password').val()
+    key = $('#input-add-private-key-key').val()
+    $('#input-add-private-key-password').val('')
+    $('#input-add-private-key-key').val('')
+    addPrivateKey(password, key)
+
+  $('#form-add-private-key').submit ()->
+    event.preventDefault()
     $('#modal-add-private-key').modal('hide')
     password = $('#input-add-private-key-password').val()
     key = $('#input-add-private-key-key').val()
@@ -31,10 +49,28 @@ $ ->
     $('#private-key-to-remove-index').val('')
     removePrivateKey(password, index)
 
+  $('#form-remove-private-key').submit ()->
+    event.preventDefault()
+    $('#modal-remove-private-key').modal('hide')
+    password = $('#input-remove-private-key-password').val()
+    index = $('#private-key-to-remove-index').val()
+    $('#input-remove-private-key-password').val('')
+    $('#private-key-to-remove-index').val('')
+    removePrivateKey(password, index)
+
   $('.button-close-remove-private-key').click ()->
     $('#modal-remove-private-key').modal('hide')
 
   $('#button-remove-public-key').click ()->
+    $('#modal-remove-public-key').modal('hide')
+    password = $('#input-remove-public-key-password').val()
+    index = $('#public-key-to-remove-index').val()
+    $('#input-remove-public-key-password').val()
+    $('#public-key-to-remove-index').val()
+    removePublicKey(password, index)
+
+  $('#form-remove-public-key').submit ()->
+    event.preventDefault()
     $('#modal-remove-public-key').modal('hide')
     password = $('#input-remove-public-key-password').val()
     index = $('#public-key-to-remove-index').val()
@@ -50,10 +86,22 @@ $ ->
     $('#modal-enter-master-password').modal('hide')
     read_keys(password)
 
+  $('#form-enter-master-password').submit ()->
+    event.preventDefault()
+    password = $('#input-entered-master-password').val()
+    read_keys(password)
+    $('#modal-enter-master-password').modal('hide')
+
   $('.button-close-enter-master-password').click ()->
     $('#modal-enter-master-password').modal('hide')
 
   $('#button-confirm-initialize-master-password').click ()->
+    password = $('#input-initialized-master-password').val()
+    $('#modal-initialize-master-password').modal('hide')
+    read_keys(password)
+
+  $('#form-initialize-master-password').submit ()->
+    event.preventDefault()
     password = $('#input-initialized-master-password').val()
     $('#modal-initialize-master-password').modal('hide')
     read_keys(password)

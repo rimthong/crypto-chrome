@@ -10,7 +10,7 @@ body
           button.close.button-close-encrypt(type='button',aria-hidden='true')&times;
           h4.modal-title Encrypt message
         .modal-body
-          form.form
+          form#form-encrypt.form
             .form-group
               label Master Password
               input#input-encrypt-master-password.form-control(type='password')
@@ -42,7 +42,7 @@ body
           button.close.button-close-sign(type='button',aria-hidden='true')&times;
           h4.modal-title Sign message
         .modal-body
-          form.form
+          form#form-sign.form
             .form-group
               label Master Password
               input#input-sign-master-password.form-control(type='password')
@@ -64,7 +64,7 @@ body
           button.close.button-close-decrypt(type='button',aria-hidden='true')&times;
           h4.modal-title Decrypt message
         .modal-body
-          form.form
+          form#form-decrypt.form
             .form-group
               label Master Password
               input#input-decrypt-master-password.form-control(type='password')
@@ -86,7 +86,7 @@ body
           button.close.button-close-enter-master-password(type='button',aria-hidden='true')&times;
           h4.modal-title Unlock key storage
         .modal-body
-          form.form
+          form#form-enter-master-password.form
             .form-group
               label Master Password
               input#input-entered-master-password.form-control(type='password')
