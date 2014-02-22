@@ -1,8 +1,8 @@
 $(function() {
-  var decrypt, encrypt, engine, enterMasterPassword, populate_keys, sign;
+  var decrypt, encrypt, engine, enterMasterPassword, populate_keys, sign, verify;
   engine = cryptochrome();
   $('#button-confirm-verify').click(function() {
-    return $('#modal-verify').modal('hide');
+    return verify();
   });
   $('.button-close-verify').click(function() {
     return $('#modal-verify').modal('hide');
@@ -14,6 +14,47 @@ $(function() {
   $('#button-confirm-sign').click(function() {
     return sign();
   });
+  verify = function() {
+    var index, key, master_password, signedText;
+    master_password = $('#input-verify-master-password').val();
+    key = $('#select-verify-public-key').val();
+    $('#modal-verify').modal('hide');
+    signedText = $('#popup-textarea').val();
+    index = parseInt(key);
+    engine.list_public_keys(master_password, function(err, keys) {
+      if (err) {
+        return alert(err);
+      } else {
+        return engine.verify(signedText, keys[index], function(err, result) {
+          console.log('signature verification!');
+          if (result && !err) {
+            $('#verification-success').removeClass('hidden').addClass('show');
+            $('#verification-failure').removeClass('show').addClass('hidden');
+          } else {
+            $('#verification-failure').removeClass('hidden').addClass('show');
+            $('#verification-success').removeClass('show').addClass('hidden');
+          }
+          return true;
+        });
+      }
+    });
+    $('#popup-textarea').val(cipherText);
+    return chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, function(tabs) {
+      return chrome.tabs.sendMessage(tabs[0].id, {
+        fonction: 'inject',
+        message: cipherText
+      }, function(response) {
+        if (response && response.status === 'ok') {
+
+        } else {
+          return $('#popup-textarea').val(cipherText);
+        }
+      });
+    });
+  };
   sign = function() {
     var index, key, key_password, master_password, plainText;
     master_password = $('#input-sign-master-password').val();
@@ -36,9 +77,7 @@ $(function() {
               fonction: 'inject',
               message: signed_message
             }, function(response) {
-              if (response && response.status === 'ok') {
-
-              } else {
+              if (!(response && response.status === 'ok')) {
                 $('#popup-textarea').val(signed_message);
                 return true;
               }
@@ -52,7 +91,6 @@ $(function() {
     return $('#modal-sign').modal('hide');
   });
   $('#form-decrypt').submit(function() {
-    console.log('Form decrypt submit');
     event.preventDefault();
     return decrypt();
   });
@@ -101,7 +139,6 @@ $(function() {
       } else {
         return engine.encrypt(plainText, keys[index], function(err, encrypted_message) {
           cipherText = encrypted_message;
-          console.log(cipherText);
           return true;
         });
       }
@@ -143,7 +180,6 @@ $(function() {
     return $('#modal-enter-master-password').modal('hide');
   });
   $('#button-import-textarea').click(function() {
-    console.log("Clicked text area");
     return chrome.tabs.query({
       active: true,
       currentWindow: true
@@ -156,7 +192,6 @@ $(function() {
     });
   });
   $('#button-import-message-textarea').click(function() {
-    console.log("Clicked text area");
     return chrome.tabs.query({
       active: true,
       currentWindow: true

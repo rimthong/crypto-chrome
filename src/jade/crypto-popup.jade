@@ -29,7 +29,13 @@ body
           button.close.button-close-verify(type='button',aria-hidden='true')&times;
           h4.modal-title Verify message signature
         .modal-body
-          p.text-muted Message signature not yet implemented.
+          form#form-verify.form
+            .form-group
+              label Master Password
+              input#input-verify-master-password.form-control(type='password')
+            .form-group
+              label Choose a key
+              select#select-verify-public-key.select-public-key.form-control
         .modal-footer
           button.button-close-verify.btn Cancel
           button#button-confirm-verify.btn.btn-success 
@@ -98,6 +104,13 @@ body
   #popup-body
     .container
       h1 crypto-chrome
+      #verification-box
+        p#verification-success.text-success.hidden
+          i.icon-ok-sign
+          | Message has been successfully verified.
+        p#verification-failure.text-danger.hidden
+          i.icon-remove-sign
+          | Message verification has failed.
       #popup-message-box
       form.form
         textarea#popup-textarea(placeholder="paste text here",rows='10', cols='42')

@@ -2,7 +2,7 @@ $ ->
   engine = cryptochrome()
 
   $('#button-confirm-verify').click ()->
-    $('#modal-verify').modal('hide')
+    verify()
 
   $('.button-close-verify').click ()->
     $('#modal-verify').modal('hide')
@@ -13,6 +13,37 @@ $ ->
 
   $('#button-confirm-sign').click ()->
     sign()
+
+  verify = ()->
+    master_password = $('#input-verify-master-password').val()
+    key = $('#select-verify-public-key').val()
+    $('#modal-verify').modal('hide')
+    signedText = $('#popup-textarea').val()
+    index = parseInt(key)
+    engine.list_public_keys(master_password, (err, keys) ->
+      if err
+        alert err
+      else
+        engine.verify(signedText, keys[index], (err, result) ->
+          if result and !err
+            $('#verification-success').removeClass('hidden').addClass('show')
+            $('#verification-failure').removeClass('show').addClass('hidden')
+          else
+            $('#verification-failure').removeClass('hidden').addClass('show')
+            $('#verification-success').removeClass('show').addClass('hidden')
+          yes
+        )
+    )
+
+    $('#popup-textarea').val(cipherText)
+    #We send the content-script our new ciphertext
+    chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
+      chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
+        if response and response.status is 'ok'
+          #Do nothing, injection successful
+        else
+          #Did not inject, just alter textarea
+          $('#popup-textarea').val(cipherText)
 
   sign = ()->
     master_password = $('#input-sign-master-password').val()
@@ -30,9 +61,7 @@ $ ->
           $('#popup-textarea').val(signed_message)
           chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
             chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: signed_message}, (response)->
-              if response and response.status is 'ok'
-                #Do nothing, injection successful
-              else
+              unless response and response.status is 'ok'
                 #Did not inject, just alter textarea
                 $('#popup-textarea').val(signed_message)
                 yes
@@ -88,7 +117,6 @@ $ ->
       else
         engine.encrypt(plainText, keys[index], (err, encrypted_message) ->
           cipherText = encrypted_message
-          console.log(cipherText)
           yes
         )
     )
@@ -122,13 +150,11 @@ $ ->
     $('#modal-enter-master-password').modal('hide')
 
   $('#button-import-textarea').click ()->
-    console.log "Clicked text area"
     chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
       chrome.tabs.sendMessage tabs[0].id, {fonction: 'retrieve'}, (response)->
         $('#popup-textarea').html response.text
 
   $('#button-import-message-textarea').click ()->
-    console.log "Clicked text area"
     chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
       chrome.tabs.sendMessage tabs[0].id, {fonction: 'retrieveLast'}, (response)->
         $('#popup-textarea').html response.text

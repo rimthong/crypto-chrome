@@ -39,7 +39,16 @@
           <h4 class="modal-title">Verify message signature</h4>
         </div>
         <div class="modal-body">
-          <p class="text-muted">Message signature not yet implemented.</p>
+          <form id="form-verify" class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-verify-master-password" type="password" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <label>Choose a key</label>
+              <select id="select-verify-public-key" class="select-public-key form-control"></select>
+            </div>
+          </form>
         </div>
         <div class="modal-footer">
           <button class="button-close-verify btn">Cancel</button>
@@ -133,6 +142,10 @@
   <div id="popup-body">
     <div class="container">
       <h1>crypto-chrome</h1>
+      <div id="verification-box">
+        <p id="verification-success" class="text-success hidden"><i class="icon-ok-sign"></i>Message has been successfully verified.</p>
+        <p id="verification-failure" class="text-danger hidden"><i class="icon-remove-sign"></i>Message verification has failed.</p>
+      </div>
       <div id="popup-message-box"></div>
       <form class="form">
         <textarea id="popup-textarea" placeholder="paste text here" rows="10" cols="42"></textarea>

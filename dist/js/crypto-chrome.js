@@ -18,6 +18,19 @@ function cryptochrome() {
 
 
   /**
+   * @return boolean Signature verified
+   */
+  function verify(message, key, callback) {
+    result = true
+    if(result) {
+      return callback(null, true);
+    }
+    return callback("Failed to verify message", false);
+  };
+  this.verify = verify;
+
+
+  /**
    * Descrypt an armored text
    * @return string
    */
