@@ -36,27 +36,27 @@ cryptochrome_engine = ()->
   #Internal key management
   
   @getPublicKeys =  (masterPassword, callback) ->
-    armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-pub'])
+    armoredKeys = JSON.parse sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-pub'])
     if armoredKeys
       keys = []
       keys.push(openpgp.key.readArmored(key)) for key in armoredKeys
       callback null, keys
     else
-      callback 'Wrong master password.'
+      callback('Wrong master password.')
 
   @addPublicKey = (masterPassword, armoredKey, callback) ->
     key = openpgp.key.readArmored armoredKey # we just check the format
-    if !key then callback 'Wrong key format.'
-    armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-pub'])
+    if !key then callback('Wrong key format.')
+    armoredKeys = JSON.parse sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-pub'])
     if armoredKeys
       armoredKeys.push armoredKey
       window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys))
       callback()
     else
-      callback 'Wrong master password.'
+      callback('Wrong master password.')
 
   @getPrivateKeys =  (masterPassword, callback) ->
-    armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-priv'])
+    armoredKeys = JSON.parse sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-priv'])
     if armoredKeys
       keys = []
       #XXX read_publicKey does not exist anymore, should remove the armoring
@@ -68,7 +68,7 @@ cryptochrome_engine = ()->
   @addPrivateKey = (masterPassword, armoredKey, callback) ->
     key = openpgp.key.readArmored armoredKey # we just check the format
     if !key then callback 'Wrong key format.'
-    armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-priv'])
+    armoredKeys = JSON.parse sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-priv'])
     if armoredKeys
       armoredKeys.push armoredKey
       window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys))
@@ -88,13 +88,13 @@ cryptochrome_engine = ()->
       callback null, result
 
   @deletePublicKeyByIndex = (masterPassword, index, callback) ->
-    armoredKeys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']))
+    armoredKeys = JSON.parse sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub'])
     armoredKeys.splice index, 1
     window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(armoredKeys))
     callback null
 
   @deletePrivateKeyByIndex = (masterPassword, index, callback) ->
-    armoredKeys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']))
+    armoredKeys = JSON.parse sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv'])
     armoredKeys.splice index, 1
     window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(armoredKeys))
     callback null

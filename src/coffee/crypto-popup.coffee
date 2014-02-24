@@ -173,26 +173,24 @@ $ ->
       try
         pub_keys = null
         priv_keys = null
+        $("select").empty()
         engine.getPublicKeys master_password, (err, keys) ->
           pub_keys = keys
+          i = 0
+          for key in keys
+            name = key.keys[0].users[0].userId.userid
+            $(".select-public-key").append("<option value='" + i + "'>" + name + "</option>");
+            i++
 
         engine.getPrivateKeys master_password, (err, keys) ->
           priv_keys = keys
-
+          i = 0
+          for key in keys
+            name = key.keys[0].users[0].userId.userid
+            $(".select-private-key").append("<option value='" + i + "'>" + name + "</option>");
+            i++
       catch e
-        alert "Failed to decrypt storage"
         throw e
 
-      $("select").empty()
-      i = 0
-      for key in pub_keys
-        name = openpgp_encoding_html_encode(key[0].userIds[0].text)
-        $(".select-public-key").append("<option value='" + i + "'>" + name + "</option>");
-        i++
-      i = 0
-      for key in priv_keys
-        name = openpgp_encoding_html_encode(key[0].userIds[0].text)
-        $(".select-private-key").append("<option value='" + i + "'>" + name + "</option>");
-        i++
 
   populate_keys(engine)

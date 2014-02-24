@@ -1,0 +1,127 @@
+var cryptochrome_engine;
+
+cryptochrome_engine = function() {
+  this.encrypt = function(message, key, callback) {
+    var keys;
+    keys = [key];
+    return openpgp.encryptMessage(keys, message, callback);
+  };
+  this.signAndEncrypt = function() {
+    return openpgp.signAndEncryptMessage(publicKeys, privateKey, message, callback);
+  };
+  this.decrypt = function(encrypted, privateKey, passphrase, callback) {
+    var keyIds, message;
+    message = openpgp.message.readArmored(encrypted);
+    keyIds = message.getEncryptionKeyIds();
+    privateKey.decryptKeyPacket(keyIds, passphrase);
+    return openpgp.decryptMessage(privateKey, message, callback);
+  };
+  this.decryptAndVerify = function() {
+    return openpgp.decryptAndVerifyMessage(privateKey, publicKeys, message, callback);
+  };
+  this.sign = function(message, key, passphrase, callback) {
+    key.getSigningKeyPacket().decrypt(passphrase);
+    return openpgp.signClearMessage([key], message, callback);
+  };
+  this.verify = function(text, key) {
+    var message;
+    message = openpgp.cleartext.readArmored(text);
+    return openpgp.verifyClearSignedMessage([key], message, callback);
+  };
+  this.generateKeyPair = function() {
+    return opengpgp.generateKeyPair(keyType, numBits, userId, passphrase, callback);
+  };
+  this.getPublicKeys = function(masterPassword, callback) {
+    var armoredKeys, key, keys, _i, _len;
+    armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-pub']));
+    if (armoredKeys) {
+      keys = [];
+      for (_i = 0, _len = armoredKeys.length; _i < _len; _i++) {
+        key = armoredKeys[_i];
+        keys.push(openpgp.key.readArmored(key));
+      }
+      return callback(null, keys);
+    } else {
+      return callback('Wrong master password.');
+    }
+  };
+  this.addPublicKey = function(masterPassword, armoredKey, callback) {
+    var armoredKeys, key;
+    key = openpgp.key.readArmored(armoredKey);
+    if (!key) {
+      callback('Wrong key format.');
+    }
+    armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-pub']));
+    if (armoredKeys) {
+      armoredKeys.push(armoredKey);
+      window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys));
+      return callback();
+    } else {
+      return callback('Wrong master password.');
+    }
+  };
+  this.getPrivateKeys = function(masterPassword, callback) {
+    var armoredKeys, key, keys, _i, _len;
+    armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-priv']));
+    if (armoredKeys) {
+      keys = [];
+      for (_i = 0, _len = armoredKeys.length; _i < _len; _i++) {
+        key = armoredKeys[_i];
+        keys.push(openpgp.key.readArmored(key));
+      }
+      return callback(null, keys);
+    } else {
+      return callback('Wrong master password.');
+    }
+  };
+  this.addPrivateKey = function(masterPassword, armoredKey, callback) {
+    var armoredKeys, key;
+    key = openpgp.key.readArmored(armoredKey);
+    if (!key) {
+      callback('Wrong key format.');
+    }
+    armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-priv']));
+    if (armoredKeys) {
+      armoredKeys.push(armoredKey);
+      window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys));
+      return callback(null);
+    } else {
+      return callback('Wrong master password.');
+    }
+  };
+  this.findPublicKeyByEmail = function(masterPassword, email, callback) {
+    return this.getPublicKeys(masterPassword, function(err, keys) {
+      var key, result, userId, _i, _j, _len, _len1, _ref;
+      if (err) {
+        callback(err);
+      }
+      result = [];
+      for (_i = 0, _len = keys.length; _i < _len; _i++) {
+        key = keys[_i];
+        _ref = key.obj.userIds;
+        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+          userId = _ref[_j];
+          if (userId.text.toLowerCase().indexOf(email) >= 0) {
+            result.push(key);
+          }
+        }
+      }
+      return callback(null, result);
+    });
+  };
+  this.deletePublicKeyByIndex = function(masterPassword, index, callback) {
+    var armoredKeys;
+    armoredKeys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']));
+    armoredKeys.splice(index, 1);
+    window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(armoredKeys));
+    return callback(null);
+  };
+  this.deletePrivateKeyByIndex = function(masterPassword, index, callback) {
+    var armoredKeys;
+    armoredKeys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']));
+    armoredKeys.splice(index, 1);
+    window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(armoredKeys));
+    return callback(null);
+  };
+  return this;
+};

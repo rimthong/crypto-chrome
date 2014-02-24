@@ -1,6 +1,6 @@
 $(function() {
   var decrypt, encrypt, engine, enterMasterPassword, populate_keys, sign, verify;
-  engine = cryptochrome();
+  engine = cryptochrome_engine();
   $('#button-confirm-verify').click(function() {
     return verify();
   });
@@ -21,7 +21,7 @@ $(function() {
     $('#modal-verify').modal('hide');
     signedText = $('#popup-textarea').val();
     index = parseInt(key);
-    engine.list_public_keys(master_password, function(err, keys) {
+    engine.getPublicKeys(master_password, function(err, keys) {
       if (err) {
         return alert(err);
       } else {
@@ -62,11 +62,11 @@ $(function() {
     $('#modal-sign').modal('hide');
     plainText = $('#popup-textarea').val();
     index = parseInt(key);
-    return engine.list_private_keys(master_password, function(err, keys) {
+    return engine.getPrivateKeys(master_password, function(err, keys) {
       if (err) {
         return alert(err);
       } else {
-        return engine.sign(plainText, keys[index], key_password, master_password, function(err, signed_message) {
+        return engine.sign(plainText, keys[index], key_password, function(err, signed_message) {
           $('#popup-textarea').val(signed_message);
           return chrome.tabs.query({
             active: true,
@@ -104,11 +104,11 @@ $(function() {
     $('#modal-decrypt').modal('hide');
     cipherText = $('#popup-textarea').val();
     index = parseInt(key);
-    return engine.list_private_keys(master_password, function(err, keys) {
+    return engine.getPrivateKeys(master_password, function(err, keys) {
       if (err) {
         return alert(err);
       } else {
-        return engine.decrypt(cipherText, keys[index], key_password, master_password, function(err, text) {
+        return engine.decrypt(cipherText, keys[index], key_password, function(err, text) {
           return $('#popup-textarea').val(text);
         });
       }
@@ -132,7 +132,7 @@ $(function() {
     plainText = $('#popup-textarea').val();
     cipherText = null;
     index = parseInt(key);
-    engine.list_public_keys(master_password, function(err, keys) {
+    engine.getPublicKeys(master_password, function(err, keys) {
       if (err) {
         return alert(err);
       } else {
@@ -215,7 +215,7 @@ $(function() {
     return $('#modal-verify').modal();
   });
   populate_keys = function(engine, master_password) {
-    var e, i, key, name, priv_keys, pub_keys, storage, _i, _j, _len, _len1, _results;
+    var e, priv_keys, pub_keys, storage;
     if (!master_password) {
       return $('#modal-enter-master-password').modal();
     } else {
@@ -226,34 +226,37 @@ $(function() {
       try {
         pub_keys = null;
         priv_keys = null;
-        engine.list_public_keys(master_password, function(err, keys) {
-          return pub_keys = keys;
+        $("select").empty();
+        engine.getPublicKeys(master_password, function(err, keys) {
+          var i, key, name, _i, _len, _results;
+          pub_keys = keys;
+          i = 0;
+          _results = [];
+          for (_i = 0, _len = keys.length; _i < _len; _i++) {
+            key = keys[_i];
+            name = key.keys[0].users[0].userId.userid;
+            $(".select-public-key").append("<option value='" + i + "'>" + name + "</option>");
+            _results.push(i++);
+          }
+          return _results;
         });
-        engine.list_private_keys(master_password, function(err, keys) {
-          return priv_keys = keys;
+        return engine.getPrivateKeys(master_password, function(err, keys) {
+          var i, key, name, _i, _len, _results;
+          priv_keys = keys;
+          i = 0;
+          _results = [];
+          for (_i = 0, _len = keys.length; _i < _len; _i++) {
+            key = keys[_i];
+            name = key.keys[0].users[0].userId.userid;
+            $(".select-private-key").append("<option value='" + i + "'>" + name + "</option>");
+            _results.push(i++);
+          }
+          return _results;
         });
       } catch (_error) {
         e = _error;
-        alert("Failed to decrypt storage");
         throw e;
       }
-      $("select").empty();
-      i = 0;
-      for (_i = 0, _len = pub_keys.length; _i < _len; _i++) {
-        key = pub_keys[_i];
-        name = openpgp_encoding_html_encode(key[0].userIds[0].text);
-        $(".select-public-key").append("<option value='" + i + "'>" + name + "</option>");
-        i++;
-      }
-      i = 0;
-      _results = [];
-      for (_j = 0, _len1 = priv_keys.length; _j < _len1; _j++) {
-        key = priv_keys[_j];
-        name = openpgp_encoding_html_encode(key[0].userIds[0].text);
-        $(".select-private-key").append("<option value='" + i + "'>" + name + "</option>");
-        _results.push(i++);
-      }
-      return _results;
     }
   };
   return populate_keys(engine);

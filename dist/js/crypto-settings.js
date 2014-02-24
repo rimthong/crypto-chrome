@@ -2,7 +2,7 @@ var read_storage;
 
 $(function() {
   var addPrivateKey, addPublicKey, engine, read_keys, removePrivateKey, removePublicKey;
-  engine = cryptochrome();
+  engine = cryptochrome_engine();
   $('#button-submit-add-public-key').click(function() {
     var key, password;
     $('#modal-add-public-key').modal('hide');
@@ -166,7 +166,7 @@ $(function() {
     return $('#modal-add-public-key').modal('show');
   });
   addPublicKey = function(master_password, key) {
-    engine.add_public_key_from_armored(master_password, key, function(err) {
+    engine.addPublicKey(master_password, key, function(err) {
       if (err) {
         return console.log(err);
       } else {
@@ -179,7 +179,7 @@ $(function() {
     return $('#modal-add-private-key').modal('show');
   });
   addPrivateKey = function(master_password, key) {
-    engine.add_private_key_from_armored(master_password, key, function(err) {
+    engine.addPrivateKey(master_password, key, function(err) {
       if (err) {
         return console.log(err);
       } else {
@@ -197,7 +197,7 @@ $(function() {
     return $('#modal-remove-private-key').modal('show');
   });
   removePrivateKey = function(master_password, keyIndex) {
-    return engine.delete_private_key_by_index(master_password, keyIndex, function(err) {
+    return engine.deletePrivateKeyByIndex(master_password, keyIndex, function(err) {
       if (err) {
         return console.log(err);
       } else {
@@ -214,7 +214,7 @@ $(function() {
     return $('#modal-remove-public-key').modal('show');
   });
   return removePublicKey = function(master_password, keyIndex) {
-    return engine.delete_public_key_by_index(master_password, keyIndex, function(err) {
+    return engine.deletePublicKeyByIndex(master_password, keyIndex, function(err) {
       if (err) {
         return console.log(err);
       } else {
@@ -225,7 +225,7 @@ $(function() {
 });
 
 read_storage = function(master_password, engine) {
-  var e, priv_keys, pub_keys, storage;
+  var e, privKeys, pubKeys, storage;
   storage = window.localStorage;
   if (!(storage['crypto-chrome-pub'] || storage['crypto-chrome-priv'])) {
     if (!storage['crypto-chrome-pub']) {
@@ -236,12 +236,14 @@ read_storage = function(master_password, engine) {
     }
   } else {
     try {
-      pub_keys = null;
-      priv_keys = null;
-      engine.list_public_keys(master_password, function(err, keys) {
+      pubKeys = null;
+      privKeys = null;
+      engine.getPublicKeys(master_password, function(err, keys) {
+        var pub_keys;
         return pub_keys = keys;
       });
-      engine.list_private_keys(master_password, function(err, keys) {
+      engine.getPrivateKeys(master_password, function(err, keys) {
+        var priv_keys;
         return priv_keys = keys;
       });
     } catch (_error) {
@@ -250,5 +252,5 @@ read_storage = function(master_password, engine) {
       throw e;
     }
   }
-  return [pub_keys, priv_keys];
+  return [pubKeys, privKeys];
 };

@@ -230,7 +230,7 @@ read_storage = (master_password, engine) ->
       engine.getPublicKeys master_password, (err, keys) ->
         pub_keys = keys
       
-      engine.getPrivateKeys(master_password, (err, keys) ->
+      engine.getPrivateKeys master_password, (err, keys) ->
         priv_keys = keys
 
     catch e
