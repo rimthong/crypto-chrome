@@ -10,10 +10,12 @@ cryptochrome_engine = function() {
   this.signAndEncrypt = function() {
     return openpgp.signAndEncryptMessage(publicKeys, privateKey, message, callback);
   };
-  this.decrypt = function(encrypted, privateKey, passphrase, callback) {
-    var keyIds, message;
+  this.decrypt = function(encrypted, keys, passphrase, callback) {
+    var keyIds, message, privateKey;
+    privateKey = keys.keys[0];
     message = openpgp.message.readArmored(encrypted);
     keyIds = message.getEncryptionKeyIds();
+    console.log("key is", privateKey);
     privateKey.decryptKeyPacket(keyIds, passphrase);
     return openpgp.decryptMessage(privateKey, message, callback);
   };

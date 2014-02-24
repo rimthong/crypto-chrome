@@ -97,18 +97,18 @@ $(function() {
     return decrypt();
   });
   decrypt = function() {
-    var cipherText, index, key, key_password, master_password;
-    master_password = $('#input-decrypt-master-password').val();
+    var cipherText, index, key, keyPassword, masterPassword;
+    masterPassword = $('#input-decrypt-master-password').val();
     key = $('#select-decrypt-private-key').val();
-    key_password = $('#input-decrypt-private-password').val();
+    keyPassword = $('#input-decrypt-private-password').val();
     $('#modal-decrypt').modal('hide');
     cipherText = $('#popup-textarea').val();
     index = parseInt(key);
-    return engine.getPrivateKeys(master_password, function(err, keys) {
+    return engine.getPrivateKeys(masterPassword, function(err, keys) {
       if (err) {
-        return alert(err);
+        return console.log('Error getting keys:', err);
       } else {
-        return engine.decrypt(cipherText, keys[index], key_password, function(err, text) {
+        return engine.decrypt(cipherText, keys[index], keyPassword, function(err, text) {
           return $('#popup-textarea').val(text);
         });
       }
@@ -137,7 +137,6 @@ $(function() {
         return console.log('Error getting keys:', err);
       } else {
         return engine.encrypt(plainText, keys[index], function(err, ciphertext) {
-          console.log("FOund ciphertext", ciphertext);
           return chrome.tabs.query({
             active: true,
             currentWindow: true

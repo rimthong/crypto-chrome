@@ -11,7 +11,8 @@ cryptochrome_engine = ()->
     #TODO not yet implemented
     openpgp.signAndEncryptMessage publicKeys, privateKey, message, callback
     
-  @decrypt = (encrypted, privateKey, passphrase, callback)->
+  @decrypt = (encrypted, keys, passphrase, callback)->
+    privateKey = keys.keys[0]
     message = openpgp.message.readArmored(encrypted)
     keyIds = message.getEncryptionKeyIds()
     privateKey.decryptKeyPacket keyIds, passphrase

@@ -75,17 +75,17 @@ $ ->
     decrypt()
 
   decrypt = ()->
-    master_password = $('#input-decrypt-master-password').val()
+    masterPassword = $('#input-decrypt-master-password').val()
     key = $('#select-decrypt-private-key').val()
-    key_password = $('#input-decrypt-private-password').val()
+    keyPassword = $('#input-decrypt-private-password').val()
     $('#modal-decrypt').modal('hide')
     cipherText = $('#popup-textarea').val()
     index = parseInt(key)
-    engine.getPrivateKeys master_password, (err, keys) ->
+    engine.getPrivateKeys masterPassword, (err, keys) ->
       if err
-        alert err
+        console.log 'Error getting keys:', err
       else
-        engine.decrypt cipherText, keys[index], key_password,  (err, text) ->
+        engine.decrypt cipherText, keys[index], keyPassword,  (err, text) ->
           $('#popup-textarea').val text
 
   $('.button-close-decrypt').click ()->
