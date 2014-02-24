@@ -125,38 +125,32 @@ $(function() {
     return encrypt();
   });
   encrypt = function() {
-    var cipherText, index, key, master_password, plainText;
-    master_password = $('#input-encrypt-master-password').val();
+    var cipherText, index, key, masterPassword, plainText;
+    masterPassword = $('#input-encrypt-master-password').val();
     key = $('#select-encrypt-public-key').val();
     $('#modal-encrypt').modal('hide');
     plainText = $('#popup-textarea').val();
     cipherText = null;
     index = parseInt(key);
-    engine.getPublicKeys(master_password, function(err, keys) {
+    return engine.getPublicKeys(masterPassword, function(err, keys) {
       if (err) {
-        return alert(err);
+        return console.log('Error getting keys:', err);
       } else {
-        return engine.encrypt(plainText, keys[index], function(err, encrypted_message) {
-          cipherText = encrypted_message;
-          return true;
+        return engine.encrypt(plainText, keys[index], function(err, ciphertext) {
+          console.log("FOund ciphertext", ciphertext);
+          return chrome.tabs.query({
+            active: true,
+            currentWindow: true
+          }, function(tabs) {
+            return chrome.tabs.sendMessage(tabs[0].id, {
+              fonction: 'inject',
+              message: cipherText
+            }, function(response) {
+              return $('#popup-textarea').val(ciphertext);
+            });
+          });
         });
       }
-    });
-    $('#popup-textarea').val(cipherText);
-    return chrome.tabs.query({
-      active: true,
-      currentWindow: true
-    }, function(tabs) {
-      return chrome.tabs.sendMessage(tabs[0].id, {
-        fonction: 'inject',
-        message: cipherText
-      }, function(response) {
-        if (response && response.status === 'ok') {
-
-        } else {
-          return $('#popup-textarea').val(cipherText);
-        }
-      });
     });
   };
   $('.button-close-encrypt').click(function() {

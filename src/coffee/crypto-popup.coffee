@@ -99,29 +99,22 @@ $ ->
     encrypt()
 
   encrypt = ()->
-    master_password = $('#input-encrypt-master-password').val()
+    masterPassword = $('#input-encrypt-master-password').val()
     key = $('#select-encrypt-public-key').val()
     $('#modal-encrypt').modal('hide')
     plainText = $('#popup-textarea').val()
     cipherText = null
     index = parseInt(key)
-    engine.getPublicKeys master_password, (err, keys) ->
+    engine.getPublicKeys masterPassword, (err, keys) ->
       if err
-        alert err
+        console.log 'Error getting keys:', err
       else
-        engine.encrypt plainText, keys[index], (err, encrypted_message) ->
-          cipherText = encrypted_message
-          yes
-
-    $('#popup-textarea').val(cipherText)
-    #We send the content-script our new ciphertext
-    chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
-      chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
-        if response and response.status is 'ok'
-          #Do nothing, injection successful
-        else
-          #Did not inject, just alter textarea
-          $('#popup-textarea').val(cipherText)
+        engine.encrypt plainText, keys[index], (err, ciphertext) ->
+          #We send the content-script our new ciphertext
+          chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
+            chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
+              #Either way, we put the encrypted version in text box
+              $('#popup-textarea').val(ciphertext)
 
   $('.button-close-encrypt').click ()->
     $('#modal-encrypt').modal('hide')

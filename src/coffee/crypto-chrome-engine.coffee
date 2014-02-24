@@ -1,11 +1,11 @@
 cryptochrome_engine = ()->
 
   #OpenGPG functionalities
+  @init = ()->
+    openpgp.initWorker 'openpgp.worker.js'
   
   @encrypt = (message, key, callback)->
-    #XXX is key already non-armored ?
-    keys = [key]
-    openpgp.encryptMessage keys, message, callback
+    openpgp.encryptMessage key.keys, message, callback
 
   @signAndEncrypt = ()->
     #TODO not yet implemented
@@ -98,5 +98,5 @@ cryptochrome_engine = ()->
     armoredKeys.splice index, 1
     window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(armoredKeys))
     callback null
-    
+  @init() 
   @

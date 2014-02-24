@@ -21,6 +21,12 @@ module.exports = (grunt)->
           bare: true
 
     concat:
+      workerproxy:
+        src: ['vendor/openpgp/openpgp.worker.js']
+        dest: 'dist/html/openpgp.worker.js'
+      minimized:
+        src: ['vendor/openpgp/openpgp.min.js']
+        dest: 'dist/html/openpgp.min.js'
       js:
         src: ['bower_components/jquery/jquery.js', 'bower_components/bootstrap/dist/js/bootstrap.js']
         dest: 'dist/js/vendor.js'

@@ -1,10 +1,11 @@
 var cryptochrome_engine;
 
 cryptochrome_engine = function() {
+  this.init = function() {
+    return openpgp.initWorker('openpgp.worker.js');
+  };
   this.encrypt = function(message, key, callback) {
-    var keys;
-    keys = [key];
-    return openpgp.encryptMessage(keys, message, callback);
+    return openpgp.encryptMessage(key.keys, message, callback);
   };
   this.signAndEncrypt = function() {
     return openpgp.signAndEncryptMessage(publicKeys, privateKey, message, callback);
@@ -123,5 +124,6 @@ cryptochrome_engine = function() {
     window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(armoredKeys));
     return callback(null);
   };
+  this.init();
   return this;
 };
