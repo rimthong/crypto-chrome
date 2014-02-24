@@ -44,25 +44,21 @@ $ ->
           $('#popup-textarea').val(cipherText)
 
   sign = ()->
-    master_password = $('#input-sign-master-password').val()
+    masterPassword = $('#input-sign-master-password').val()
     key = $('#select-sign-private-key').val()
-    key_password = $('#input-sign-private-password').val()
+    keyPassword = $('#input-sign-private-password').val()
     $('#modal-sign').modal('hide')
     plainText = $('#popup-textarea').val()
     index = parseInt(key)
-    engine.getPrivateKeys master_password, (err, keys) ->
+    engine.getPrivateKeys masterPassword, (err, keys) ->
       if err
-        alert err
+        console.log 'Error getting keys:', err
       else
-        engine.sign plainText, keys[index], key_password, (err, signed_message) ->
+        engine.sign plainText, keys[index], keyPassword, (err, signedMessage) ->
+          $('#popup-textarea').val(signedMessage)
           #We send the content-script our signed text
-          $('#popup-textarea').val(signed_message)
           chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
             chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: signed_message}, (response)->
-              unless response and response.status is 'ok'
-                #Did not inject, just alter textarea
-                $('#popup-textarea').val(signed_message)
-                yes
 
   $('.button-close-sign').click ()->
     $('#modal-sign').modal('hide')
@@ -111,10 +107,10 @@ $ ->
       else
         engine.encrypt plainText, keys[index], (err, ciphertext) ->
           #We send the content-script our new ciphertext
+          $('#popup-textarea').val(ciphertext)
           chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
             chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
               #Either way, we put the encrypted version in text box
-              $('#popup-textarea').val(ciphertext)
 
   $('.button-close-encrypt').click ()->
     $('#modal-encrypt').modal('hide')

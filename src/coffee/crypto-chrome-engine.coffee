@@ -22,9 +22,10 @@ cryptochrome_engine = ()->
     #TODO not yet implemented
     openpgp.decryptAndVerifyMessage privateKey, publicKeys, message, callback
 
-  @sign = (message, key, passphrase, callback)->
+  @sign = (message, keys, passphrase, callback)->
+    key = keys.keys[0]
     key.getSigningKeyPacket().decrypt passphrase
-    openpgp.signClearMessage [key], message, callback
+    openpgp.signClearMessage keys.keys, message, callback
 
   @verify = (text, key)->
     message = openpgp.cleartext.readArmored text

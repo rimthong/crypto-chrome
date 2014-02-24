@@ -55,19 +55,19 @@ $(function() {
     });
   };
   sign = function() {
-    var index, key, key_password, master_password, plainText;
-    master_password = $('#input-sign-master-password').val();
+    var index, key, keyPassword, masterPassword, plainText;
+    masterPassword = $('#input-sign-master-password').val();
     key = $('#select-sign-private-key').val();
-    key_password = $('#input-sign-private-password').val();
+    keyPassword = $('#input-sign-private-password').val();
     $('#modal-sign').modal('hide');
     plainText = $('#popup-textarea').val();
     index = parseInt(key);
-    return engine.getPrivateKeys(master_password, function(err, keys) {
+    return engine.getPrivateKeys(masterPassword, function(err, keys) {
       if (err) {
-        return alert(err);
+        return console.log('Error getting keys:', err);
       } else {
-        return engine.sign(plainText, keys[index], key_password, function(err, signed_message) {
-          $('#popup-textarea').val(signed_message);
+        return engine.sign(plainText, keys[index], keyPassword, function(err, signedMessage) {
+          $('#popup-textarea').val(signedMessage);
           return chrome.tabs.query({
             active: true,
             currentWindow: true
@@ -75,12 +75,7 @@ $(function() {
             return chrome.tabs.sendMessage(tabs[0].id, {
               fonction: 'inject',
               message: signed_message
-            }, function(response) {
-              if (!(response && response.status === 'ok')) {
-                $('#popup-textarea').val(signed_message);
-                return true;
-              }
-            });
+            }, function(response) {});
           });
         });
       }
@@ -137,6 +132,7 @@ $(function() {
         return console.log('Error getting keys:', err);
       } else {
         return engine.encrypt(plainText, keys[index], function(err, ciphertext) {
+          $('#popup-textarea').val(ciphertext);
           return chrome.tabs.query({
             active: true,
             currentWindow: true
@@ -144,9 +140,7 @@ $(function() {
             return chrome.tabs.sendMessage(tabs[0].id, {
               fonction: 'inject',
               message: cipherText
-            }, function(response) {
-              return $('#popup-textarea').val(ciphertext);
-            });
+            }, function(response) {});
           });
         });
       }

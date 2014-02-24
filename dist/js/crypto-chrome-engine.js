@@ -15,16 +15,17 @@ cryptochrome_engine = function() {
     privateKey = keys.keys[0];
     message = openpgp.message.readArmored(encrypted);
     keyIds = message.getEncryptionKeyIds();
-    console.log("key is", privateKey);
     privateKey.decryptKeyPacket(keyIds, passphrase);
     return openpgp.decryptMessage(privateKey, message, callback);
   };
   this.decryptAndVerify = function() {
     return openpgp.decryptAndVerifyMessage(privateKey, publicKeys, message, callback);
   };
-  this.sign = function(message, key, passphrase, callback) {
+  this.sign = function(message, keys, passphrase, callback) {
+    var key;
+    key = keys.keys[0];
     key.getSigningKeyPacket().decrypt(passphrase);
-    return openpgp.signClearMessage([key], message, callback);
+    return openpgp.signClearMessage(keys.keys, message, callback);
   };
   this.verify = function(text, key) {
     var message;
