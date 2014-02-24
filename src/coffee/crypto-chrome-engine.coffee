@@ -2,29 +2,35 @@ cryptochrome_engine = ()->
 
   #OpenGPG functionalities
   
-  @init = ()->
-    openpgp.initWorker()
-
-  @encrypt = ()->
+  @encrypt = (message, key, callback)->
+    #XXX is key already non-armored ?
     keys = [key]
     openpgp.encryptMessage keys, message, callback
 
   @signAndEncrypt = ()->
+    #TODO not yet implemented
     openpgp.signAndEncryptMessage publicKeys, privateKey, message, callback
     
-  @decrypt = ()->
+  @decrypt = (encrypted, privateKey, passphrase, callback)->
+    message = openpgp.message.readArmored(encrypted)
+    keyIds = message.getEncryptionKeyIds()
+    privateKey.decryptKeyPacket keyIds, passphrase
     openpgp.decryptMessage privateKey, message, callback
 
   @decryptAndVerify = ()->
+    #TODO not yet implemented
     openpgp.decryptAndVerifyMessage privateKey, publicKeys, message, callback
 
-  @sign = ()->
-    openpgp.signClearMessage privateKeys, message, callback
+  @sign = (message, key, passphrase, callback)->
+    key.getSigningKeyPacket().decrypt passphrase
+    openpgp.signClearMessage [key], message, callback
 
-  @verify = ()->
-    openpgp.verifyClearSignedMessage publicKeys, message, callback
+  @verify = (text, key)->
+    message = openpgp.cleartext.readArmored text
+    openpgp.verifyClearSignedMessage [key], message, callback
 
   @generateKeyPair = ()->
+    #TODO not yet used/implemented
     opengpgp.generateKeyPair keyType, numBits, userId, passphrase, callback
 
   #Internal key management
@@ -33,13 +39,13 @@ cryptochrome_engine = ()->
     armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-pub'])
     if armoredKeys
       keys = []
-      keys.push(openpgp.readArmored(key)) for key in armoredKeys
+      keys.push(openpgp.key.readArmored(key)) for key in armoredKeys
       callback null, keys
     else
       callback 'Wrong master password.'
 
   @addPublicKey = (masterPassword, armoredKey, callback) ->
-    key = openpgp.readArmored armoredKey # we just check the format
+    key = openpgp.key.readArmored armoredKey # we just check the format
     if !key then callback 'Wrong key format.'
     armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-pub'])
     if armoredKeys
@@ -54,13 +60,13 @@ cryptochrome_engine = ()->
     if armoredKeys
       keys = []
       #XXX read_publicKey does not exist anymore, should remove the armoring
-      keys.push(openpgp.readArmored(key)) for key in armoredKeys
+      keys.push(openpgp.key.readArmored(key)) for key in armoredKeys
       callback null, keys
     else
       callback 'Wrong master password.'
 
   @addPrivateKey = (masterPassword, armoredKey, callback) ->
-    key = openpgp.readArmored armoredKey # we just check the format
+    key = openpgp.key.readArmored armoredKey # we just check the format
     if !key then callback 'Wrong key format.'
     armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-priv'])
     if armoredKeys
@@ -93,5 +99,4 @@ cryptochrome_engine = ()->
     window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(armoredKeys))
     callback null
     
-  @init()
   @

@@ -1,5 +1,5 @@
 $ ->
-  engine = cryptochrome()
+  engine = cryptochrome_engine()
 
   $('#button-confirm-verify').click ()->
     verify()
@@ -20,11 +20,11 @@ $ ->
     $('#modal-verify').modal('hide')
     signedText = $('#popup-textarea').val()
     index = parseInt(key)
-    engine.list_public_keys(master_password, (err, keys) ->
+    engine.getPublicKeys master_password, (err, keys) ->
       if err
         alert err
       else
-        engine.verify(signedText, keys[index], (err, result) ->
+        engine.verify signedText, keys[index], (err, result) ->
           if result and !err
             $('#verification-success').removeClass('hidden').addClass('show')
             $('#verification-failure').removeClass('show').addClass('hidden')
@@ -32,8 +32,6 @@ $ ->
             $('#verification-failure').removeClass('hidden').addClass('show')
             $('#verification-success').removeClass('show').addClass('hidden')
           yes
-        )
-    )
 
     $('#popup-textarea').val(cipherText)
     #We send the content-script our new ciphertext
@@ -52,11 +50,11 @@ $ ->
     $('#modal-sign').modal('hide')
     plainText = $('#popup-textarea').val()
     index = parseInt(key)
-    engine.list_private_keys(master_password, (err, keys) ->
+    engine.getPrivateKeys master_password, (err, keys) ->
       if err
         alert err
       else
-        engine.sign(plainText, keys[index], key_password, master_password, (err, signed_message) ->
+        engine.sign plainText, keys[index], key_password, (err, signed_message) ->
           #We send the content-script our signed text
           $('#popup-textarea').val(signed_message)
           chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
@@ -65,8 +63,6 @@ $ ->
                 #Did not inject, just alter textarea
                 $('#popup-textarea').val(signed_message)
                 yes
-        )
-    )
 
   $('.button-close-sign').click ()->
     $('#modal-sign').modal('hide')
@@ -85,14 +81,12 @@ $ ->
     $('#modal-decrypt').modal('hide')
     cipherText = $('#popup-textarea').val()
     index = parseInt(key)
-    engine.list_private_keys(master_password, (err, keys) ->
+    engine.getPrivateKeys master_password, (err, keys) ->
       if err
         alert err
       else
-        engine.decrypt(cipherText, keys[index], key_password, master_password, (err, text) ->
+        engine.decrypt cipherText, keys[index], key_password,  (err, text) ->
           $('#popup-textarea').val text
-        )
-    )
 
   $('.button-close-decrypt').click ()->
     $('#modal-decrypt').modal('hide')
@@ -111,15 +105,13 @@ $ ->
     plainText = $('#popup-textarea').val()
     cipherText = null
     index = parseInt(key)
-    engine.list_public_keys(master_password, (err, keys) ->
+    engine.getPublicKeys master_password, (err, keys) ->
       if err
         alert err
       else
-        engine.encrypt(plainText, keys[index], (err, encrypted_message) ->
+        engine.encrypt plainText, keys[index], (err, encrypted_message) ->
           cipherText = encrypted_message
           yes
-        )
-    )
 
     $('#popup-textarea').val(cipherText)
     #We send the content-script our new ciphertext
@@ -181,12 +173,12 @@ $ ->
       try
         pub_keys = null
         priv_keys = null
-        engine.list_public_keys(master_password, (err, keys) ->
+        engine.getPublicKeys master_password, (err, keys) ->
           pub_keys = keys
-        )
-        engine.list_private_keys(master_password, (err, keys) ->
+
+        engine.getPrivateKeys master_password, (err, keys) ->
           priv_keys = keys
-        )
+
       catch e
         alert "Failed to decrypt storage"
         throw e
