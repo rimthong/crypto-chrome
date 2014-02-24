@@ -1,5 +1,5 @@
 $ ->
-  engine = cryptochrome()
+  engine = cryptochrome_engine()
 
   $('#button-submit-add-public-key').click ()->
     $('#modal-add-public-key').modal('hide')
@@ -168,7 +168,7 @@ $ ->
     $('#modal-add-public-key').modal('show')
 
   addPublicKey = (master_password, key)->
-    engine.add_public_key_from_armored master_password, key, (err) ->
+    engine.addPublicKey master_password, key, (err) ->
       if err
         console.log err
       else
@@ -179,7 +179,7 @@ $ ->
     $('#modal-add-private-key').modal('show')
 
   addPrivateKey = (master_password, key)->
-    engine.add_private_key_from_armored master_password, key, (err) ->
+    engine.addPrivateKey master_password, key, (err) ->
       if err
         console.log err
       else
@@ -194,7 +194,7 @@ $ ->
     $('#modal-remove-private-key').modal('show')
 
   removePrivateKey = (master_password, keyIndex)->
-    engine.delete_private_key_by_index master_password, keyIndex, (err) ->
+    engine.deletePrivateKeyByIndex master_password, keyIndex, (err) ->
       if err
         console.log err
       else
@@ -208,7 +208,7 @@ $ ->
     $('#modal-remove-public-key').modal('show')
 
   removePublicKey = (master_password, keyIndex)->
-    engine.delete_public_key_by_index master_password, keyIndex, (err) ->
+    engine.deletePublicKeyByIndex master_password, keyIndex, (err) ->
       if err
         console.log err
       else
@@ -224,17 +224,18 @@ read_storage = (master_password, engine) ->
       storage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify([]))
   else
     try
-      pub_keys = null
-      priv_keys = null
-      engine.list_public_keys(master_password, (err, keys) ->
+      pubKeys = null
+      privKeys = null
+
+      engine.getPublicKeys master_password, (err, keys) ->
         pub_keys = keys
-      )
-      engine.list_private_keys(master_password, (err, keys) ->
+      
+      engine.getPrivateKeys(master_password, (err, keys) ->
         priv_keys = keys
-      )
+
     catch e
       alert "Failed to decrypt storage"
       throw e
 
-  return [pub_keys, priv_keys]
+  return [pubKeys, privKeys]
 

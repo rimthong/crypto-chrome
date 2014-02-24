@@ -26,7 +26,6 @@ $(function() {
         return alert(err);
       } else {
         return engine.verify(signedText, keys[index], function(err, result) {
-          console.log('signature verification!');
           if (result && !err) {
             $('#verification-success').removeClass('hidden').addClass('show');
             $('#verification-failure').removeClass('show').addClass('hidden');

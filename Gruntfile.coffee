@@ -14,6 +14,7 @@ module.exports = (grunt)->
       compile:
         files:
           'dist/js/crypto-popup.js' : ['src/coffee/crypto-popup.coffee']
+          'dist/js/crypto-chrome-engine.js' : ['src/coffee/crypto-chrome-engine.coffee']
           'dist/js/crypto-settings.js' : ['src/coffee/crypto-settings.coffee']
           'dist/js/background.js' : ['src/coffee/background.coffee']
         options:
