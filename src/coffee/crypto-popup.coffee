@@ -82,6 +82,83 @@ $ ->
   $('.button-close-decrypt').click ()->
     $('#modal-decrypt').modal('hide')
 
+  $('#button-encrypt-sign').click ()->
+    $('#modal-encrypt-sign').modal('show')
+
+  $('#form-encrypt-sign').submit ()->
+    event.preventDefault()
+    encryptSign()
+
+  $('#button-confirm-encrypt-sign').click ()->
+    encryptSign()
+
+  encryptSign = ()->
+    masterPassword = $('#input-encrypt-sign-master-password').val()
+    privateKey = $('#select-encrypt-sign-private-key').val()
+    keyPassword = $('#input-encrypt-sign-private-password').val()
+    publicKey = $('#select-encrypt-sign-public-key').val()
+    privateKeyIndex = parseInt(privateKey)
+    publicKeyIndex = parseInt(publicKey)
+    $('#modal-encrypt-sign').modal('hide')
+    plaintext = $('#popup-textarea').val()
+    engine.getPublicKeys masterPassword, (err1, publicKeys) ->
+      engine.getPrivateKeys masterPassword, (err2, privateKeys) ->
+        if err1 or err2
+          console.log 'Error getting keys:', err1, err2
+        else
+          engine.signAndEncrypt publicKeys[publicKeyIndex], privateKeys[privateKeyIndex], keyPassword, plaintext, (err, ciphertext)->
+            $('#popup-textarea').val(ciphertext)
+            chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
+              chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
+                #Either way, we put the encrypted version in text box
+
+  $('.button-close-encrypt-sign').click ()->
+    $('#modal-encrypt-sign').modal('hide')
+
+  $('#button-decrypt-verify').click ()->
+    $('#modal-decrypt-verify').modal('show')
+
+  $('#form-decrypt-verify').submit ()->
+    event.preventDefault()
+    decryptVerify()
+
+  $('#button-confirm-decrypt-verify').click ()->
+    decryptVerify()
+
+  decryptVerify = ()->
+    masterPassword = $('#input-decrypt-verify-master-password').val()
+    privateKey = $('#select-decrypt-verify-private-key').val()
+    keyPassword = $('#input-decrypt-verify-private-password').val()
+    publicKey = $('#select-decrypt-verify-public-key').val()
+    privateKeyIndex = parseInt(privateKey)
+    publicKeyIndex = parseInt(publicKey)
+    $('#modal-decrypt-verify').modal('hide')
+    ciphertext = $('#popup-textarea').val()
+    engine.getPrivateKeys masterPassword, (err, privateKeys) ->
+      engine.getPublicKeys masterPassword, (err, publicKeys) ->
+        if err
+          console.log 'Error getting keys:', err
+        else
+          engine.decryptAndVerify privateKeys[privateKeyIndex], publicKeys[publicKeyIndex], keyPassword, ciphertext, (err, result) ->
+            console.log "Decrypt and verify err", err
+            console.log "Decrypt and verify result", result
+            #$('#popup-textarea').val text
+            if result and !err
+              badSignatures = (signature for signature in result.signatures when signature.valid is false)
+
+              if badSignatures.length is 0 and result.signatures.length > 0
+                $('#verification-success').removeClass('hidden').addClass('show')
+                $('#verification-failure').removeClass('show').addClass('hidden')
+              else
+                $('#verification-failure').removeClass('hidden').addClass('show')
+                $('#verification-success').removeClass('show').addClass('hidden')
+            else
+              console.log 'Error verifying signature:', err
+            yes
+
+  $('.button-close-decrypt-verify').click ()->
+    $('#modal-decrypt-verify').modal('hide')
+
   $('#form-encrypt').submit ()->
     event.preventDefault()
     encrypt()

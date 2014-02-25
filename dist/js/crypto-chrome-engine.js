@@ -7,8 +7,9 @@ cryptochrome_engine = function() {
   this.encrypt = function(message, key, callback) {
     return openpgp.encryptMessage(key.keys, message, callback);
   };
-  this.signAndEncrypt = function() {
-    return openpgp.signAndEncryptMessage(publicKeys, privateKey, message, callback);
+  this.signAndEncrypt = function(publicKeys, privateKey, passphrase, message, callback) {
+    privateKey.keys[0].getSigningKeyPacket().decrypt(passphrase);
+    return openpgp.signAndEncryptMessage(publicKeys.keys, privateKey.keys[0], message, callback);
   };
   this.decrypt = function(encrypted, keys, passphrase, callback) {
     var keyIds, message, privateKey;
@@ -18,8 +19,9 @@ cryptochrome_engine = function() {
     privateKey.decryptKeyPacket(keyIds, passphrase);
     return openpgp.decryptMessage(privateKey, message, callback);
   };
-  this.decryptAndVerify = function() {
-    return openpgp.decryptAndVerifyMessage(privateKey, publicKeys, message, callback);
+  this.decryptAndVerify = function(privateKey, publicKeys, passphrase, ciphertext, callback) {
+    privateKey.keys[0].getSigningKeyPacket().decrypt(passphrase);
+    return openpgp.decryptAndVerifyMessage(privateKey.keys[0], publicKeys.keys, ciphertext, callback);
   };
   this.sign = function(message, keys, passphrase, callback) {
     var key;

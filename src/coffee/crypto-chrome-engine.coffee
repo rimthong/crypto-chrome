@@ -7,9 +7,9 @@ cryptochrome_engine = ()->
   @encrypt = (message, key, callback)->
     openpgp.encryptMessage key.keys, message, callback
 
-  @signAndEncrypt = ()->
-    #TODO not yet implemented
-    openpgp.signAndEncryptMessage publicKeys, privateKey, message, callback
+  @signAndEncrypt = (publicKeys, privateKey, passphrase, message, callback)->
+    privateKey.keys[0].getSigningKeyPacket().decrypt passphrase
+    openpgp.signAndEncryptMessage publicKeys.keys, privateKey.keys[0], message, callback
     
   @decrypt = (encrypted, keys, passphrase, callback)->
     privateKey = keys.keys[0]
@@ -18,9 +18,9 @@ cryptochrome_engine = ()->
     privateKey.decryptKeyPacket keyIds, passphrase
     openpgp.decryptMessage privateKey, message, callback
 
-  @decryptAndVerify = ()->
-    #TODO not yet implemented
-    openpgp.decryptAndVerifyMessage privateKey, publicKeys, message, callback
+  @decryptAndVerify = (privateKey, publicKeys, passphrase, ciphertext, callback)->
+    privateKey.keys[0].getSigningKeyPacket().decrypt passphrase
+    openpgp.decryptAndVerifyMessage privateKey.keys[0], publicKeys.keys, ciphertext, callback
 
   @sign = (message, keys, passphrase, callback)->
     key = keys.keys[0]

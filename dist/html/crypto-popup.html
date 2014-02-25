@@ -31,6 +31,74 @@
       </div>
     </div>
   </div>
+  <div id="modal-encrypt-sign" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-encrypt-sign">&times;</button>
+          <h4 class="modal-title">Encrypt and sign message</h4>
+        </div>
+        <div class="modal-body">
+          <form id="form-encrypt-sign" class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-encrypt-sign-master-password" type="password" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <label>Choose an encryption public key</label>
+              <select id="select-encrypt-sign-public-key" class="select-public-key form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Choose a signature private key</label>
+              <select id="select-encrypt-sign-private-key" class="select-private-key form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Enter private key password</label>
+              <input id="input-encrypt-sign-private-password" type="password" class="form-control"/>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-encrypt-sign btn">Cancel</button>
+          <button id="button-confirm-encrypt-sign" class="btn btn-success"> <i class="icon-lock"></i> Encrypt &amp; Sign</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-decrypt-verify" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-hidden="true" class="close button-close-decrypt-verify">&times;</button>
+          <h4 class="modal-title">Decrypt and verify message</h4>
+        </div>
+        <div class="modal-body">
+          <form id="form-decrypt-verify" class="form">
+            <div class="form-group">
+              <label>Master Password</label>
+              <input id="input-decrypt-verify-master-password" type="password" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <label>Choose a decryption private key</label>
+              <select id="select-decrypt-verify-private-key" class="select-private-key form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Enter private key password</label>
+              <input id="input-decrypt-verify-private-password" type="password" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <label>Choose a verification public key</label>
+              <select id="select-decrypt-verify-public-key" class="select-public-key form-control"></select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="button-close-decrypt-verify btn">Cancel</button>
+          <button id="button-confirm-decrypt-verify" class="btn btn-success"> <i class="icon-unlock"></i> Decrypt</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="modal-verify" class="modal fade">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -141,27 +209,27 @@
   </div>
   <div id="popup-body">
     <div class="container">
-      <h1>crypto-chrome</h1>
+      <h2>crypto-chrome</h2>
       <div id="verification-box">
         <p id="verification-success" class="text-success hidden"><i class="icon-ok-sign"></i>Message has been successfully verified.</p>
         <p id="verification-failure" class="text-danger hidden"><i class="icon-remove-sign"></i>Message verification has failed.</p>
       </div>
       <div id="popup-message-box"></div>
       <form class="form">
-        <textarea id="popup-textarea" placeholder="paste text here" rows="10" cols="42"></textarea>
+        <textarea id="popup-textarea" placeholder="paste text here" rows="8" cols="52"></textarea>
       </form>
-      <button id="button-import-textarea" class="btn btn-success"><i class="icon-cloud-download"></i> Import from page</button>
-      <button id="button-import-message-textarea" class="btn btn-success"><i class="icon-cloud-download"></i> Import last message</button>
-      <div class="well first-well">
-        <div class="row action-buttons">
-          <button id="button-encrypt" class="btn btn-warning"><i class="icon-lock"></i> Encrypt</button>
-          <button id="button-verify" class="btn btn-info"><i class="icon-check"></i> Verify Signature</button>
+      <button id="button-import-textarea" class="btn btn-primary btn-small text-center"><i class="icon-cloud-download"></i> Import from page</button>
+      <button id="button-import-message-textarea" class="btn btn-primary btn-small text-center"><i class="icon-cloud-download"></i> Import last message</button>
+      <div class="actions">
+        <div class="well">
+          <button id="button-encrypt" class="btn btn-block btn-default btn-small"><i class="icon-lock"></i> Encrypt</button>
+          <button id="button-sign" class="btn btn-block btn-default btn-small"><i class="icon-check"></i> Sign</button>
+          <button id="button-encrypt-sign" class="btn btn-block btn-default btn-small"><i class="icon-lock"></i> Encrypt &amp; Sign</button>
         </div>
-      </div>
-      <div class="well">
-        <div class="row action-buttons">
-          <button id="button-decrypt" class="btn btn-warning"><i class="icon-unlock"></i> Decrypt</button>
-          <button id="button-sign" class="btn btn-info"><i class="icon-check"></i> Sign</button>
+        <div class="well">   
+          <button id="button-decrypt" class="btn btn-block btn-default btn-small"><i class="icon-unlock"></i> Decrypt</button>
+          <button id="button-verify" class="btn btn-block btn-default btn-small"><i class="icon-check"></i> Verify</button>
+          <button id="button-decrypt-verify" class="btn btn-block btn-default btn-small"><i class="icon-unlock"></i> Decrypt &amp; Verify</button>
         </div>
       </div>
     </div>

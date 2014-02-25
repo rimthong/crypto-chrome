@@ -1,5 +1,5 @@
 $(function() {
-  var decrypt, encrypt, engine, enterMasterPassword, populate_keys, sign, verify;
+  var decrypt, decryptVerify, encrypt, encryptSign, engine, enterMasterPassword, populate_keys, sign, verify;
   engine = cryptochrome_engine();
   $('#button-confirm-verify').click(function() {
     return verify();
@@ -27,7 +27,6 @@ $(function() {
       } else {
         return engine.verify(signedText, keys[index], function(err, result) {
           var badSignatures, signature;
-          console.log('Result is:', result);
           if (result && !err) {
             badSignatures = (function() {
               var _i, _len, _ref, _results;
@@ -41,7 +40,6 @@ $(function() {
               }
               return _results;
             })();
-            console.log("badSignatures are:", badSignatures);
             if (badSignatures.length === 0 && result.signatures.length > 0) {
               $('#verification-success').removeClass('hidden').addClass('show');
               $('#verification-failure').removeClass('show').addClass('hidden');
@@ -114,6 +112,111 @@ $(function() {
   };
   $('.button-close-decrypt').click(function() {
     return $('#modal-decrypt').modal('hide');
+  });
+  $('#button-encrypt-sign').click(function() {
+    return $('#modal-encrypt-sign').modal('show');
+  });
+  $('#form-encrypt-sign').submit(function() {
+    event.preventDefault();
+    return encryptSign();
+  });
+  $('#button-confirm-encrypt-sign').click(function() {
+    return encryptSign();
+  });
+  encryptSign = function() {
+    var keyPassword, masterPassword, plaintext, privateKey, privateKeyIndex, publicKey, publicKeyIndex;
+    masterPassword = $('#input-encrypt-sign-master-password').val();
+    privateKey = $('#select-encrypt-sign-private-key').val();
+    keyPassword = $('#input-encrypt-sign-private-password').val();
+    publicKey = $('#select-encrypt-sign-public-key').val();
+    privateKeyIndex = parseInt(privateKey);
+    publicKeyIndex = parseInt(publicKey);
+    $('#modal-encrypt-sign').modal('hide');
+    plaintext = $('#popup-textarea').val();
+    return engine.getPublicKeys(masterPassword, function(err1, publicKeys) {
+      return engine.getPrivateKeys(masterPassword, function(err2, privateKeys) {
+        if (err1 || err2) {
+          return console.log('Error getting keys:', err1, err2);
+        } else {
+          return engine.signAndEncrypt(publicKeys[publicKeyIndex], privateKeys[privateKeyIndex], keyPassword, plaintext, function(err, ciphertext) {
+            $('#popup-textarea').val(ciphertext);
+            return chrome.tabs.query({
+              active: true,
+              currentWindow: true
+            }, function(tabs) {
+              return chrome.tabs.sendMessage(tabs[0].id, {
+                fonction: 'inject',
+                message: cipherText
+              }, function(response) {});
+            });
+          });
+        }
+      });
+    });
+  };
+  $('.button-close-encrypt-sign').click(function() {
+    return $('#modal-encrypt-sign').modal('hide');
+  });
+  $('#button-decrypt-verify').click(function() {
+    return $('#modal-decrypt-verify').modal('show');
+  });
+  $('#form-decrypt-verify').submit(function() {
+    event.preventDefault();
+    return decryptVerify();
+  });
+  $('#button-confirm-decrypt-verify').click(function() {
+    return decryptVerify();
+  });
+  decryptVerify = function() {
+    var ciphertext, keyPassword, masterPassword, privateKey, privateKeyIndex, publicKey, publicKeyIndex;
+    masterPassword = $('#input-decrypt-verify-master-password').val();
+    privateKey = $('#select-decrypt-verify-private-key').val();
+    keyPassword = $('#input-decrypt-verify-private-password').val();
+    publicKey = $('#select-decrypt-verify-public-key').val();
+    privateKeyIndex = parseInt(privateKey);
+    publicKeyIndex = parseInt(publicKey);
+    $('#modal-decrypt-verify').modal('hide');
+    ciphertext = $('#popup-textarea').val();
+    return engine.getPrivateKeys(masterPassword, function(err, privateKeys) {
+      return engine.getPublicKeys(masterPassword, function(err, publicKeys) {
+        if (err) {
+          return console.log('Error getting keys:', err);
+        } else {
+          return engine.decryptAndVerify(privateKeys[privateKeyIndex], publicKeys[publicKeyIndex], keyPassword, ciphertext, function(err, result) {
+            var badSignatures, signature;
+            console.log("Decrypt and verify err", err);
+            console.log("Decrypt and verify result", result);
+            if (result && !err) {
+              badSignatures = (function() {
+                var _i, _len, _ref, _results;
+                _ref = result.signatures;
+                _results = [];
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  signature = _ref[_i];
+                  if (signature.valid === false) {
+                    _results.push(signature);
+                  }
+                }
+                return _results;
+              })();
+              if (badSignatures.length === 0 && result.signatures.length > 0) {
+                $('#verification-success').removeClass('hidden').addClass('show');
+                $('#verification-failure').removeClass('show').addClass('hidden');
+              } else {
+                $('#verification-failure').removeClass('hidden').addClass('show');
+                $('#verification-success').removeClass('show').addClass('hidden');
+              }
+            } else {
+              console.log('Error verifying signature:', err);
+            }
+            return true;
+          });
+        }
+      });
+    });
+  };
+  $('.button-close-decrypt-verify').click(function() {
+    return $('#modal-decrypt-verify').modal('hide');
   });
   $('#form-encrypt').submit(function() {
     event.preventDefault();
