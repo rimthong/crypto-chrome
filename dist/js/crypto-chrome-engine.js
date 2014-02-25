@@ -27,10 +27,10 @@ cryptochrome_engine = function() {
     key.getSigningKeyPacket().decrypt(passphrase);
     return openpgp.signClearMessage(keys.keys, message, callback);
   };
-  this.verify = function(text, key) {
+  this.verify = function(text, key, callback) {
     var message;
     message = openpgp.cleartext.readArmored(text);
-    return openpgp.verifyClearSignedMessage([key], message, callback);
+    return openpgp.verifyClearSignedMessage(key.keys, message, callback);
   };
   this.generateKeyPair = function() {
     return opengpgp.generateKeyPair(keyType, numBits, userId, passphrase, callback);

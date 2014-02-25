@@ -15,43 +15,46 @@ $(function() {
     return sign();
   });
   verify = function() {
-    var index, key, master_password, signedText;
-    master_password = $('#input-verify-master-password').val();
+    var index, key, masterPassword, signedText;
+    masterPassword = $('#input-verify-master-password').val();
     key = $('#select-verify-public-key').val();
     $('#modal-verify').modal('hide');
     signedText = $('#popup-textarea').val();
     index = parseInt(key);
-    engine.getPublicKeys(master_password, function(err, keys) {
+    return engine.getPublicKeys(masterPassword, function(err, keys) {
       if (err) {
-        return alert(err);
+        return console.log('Error getting keys:', err);
       } else {
         return engine.verify(signedText, keys[index], function(err, result) {
+          var badSignatures, signature;
+          console.log('Result is:', result);
           if (result && !err) {
-            $('#verification-success').removeClass('hidden').addClass('show');
-            $('#verification-failure').removeClass('show').addClass('hidden');
+            badSignatures = (function() {
+              var _i, _len, _ref, _results;
+              _ref = result.signatures;
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                signature = _ref[_i];
+                if (signature.valid === false) {
+                  _results.push(signature);
+                }
+              }
+              return _results;
+            })();
+            console.log("badSignatures are:", badSignatures);
+            if (badSignatures.length === 0 && result.signatures.length > 0) {
+              $('#verification-success').removeClass('hidden').addClass('show');
+              $('#verification-failure').removeClass('show').addClass('hidden');
+            } else {
+              $('#verification-failure').removeClass('hidden').addClass('show');
+              $('#verification-success').removeClass('show').addClass('hidden');
+            }
           } else {
-            $('#verification-failure').removeClass('hidden').addClass('show');
-            $('#verification-success').removeClass('show').addClass('hidden');
+            console.log('Error verifying signature:', err);
           }
           return true;
         });
       }
-    });
-    $('#popup-textarea').val(cipherText);
-    return chrome.tabs.query({
-      active: true,
-      currentWindow: true
-    }, function(tabs) {
-      return chrome.tabs.sendMessage(tabs[0].id, {
-        fonction: 'inject',
-        message: cipherText
-      }, function(response) {
-        if (response && response.status === 'ok') {
-
-        } else {
-          return $('#popup-textarea').val(cipherText);
-        }
-      });
     });
   };
   sign = function() {

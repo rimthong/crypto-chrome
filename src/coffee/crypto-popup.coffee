@@ -15,33 +15,28 @@ $ ->
     sign()
 
   verify = ()->
-    master_password = $('#input-verify-master-password').val()
+    masterPassword = $('#input-verify-master-password').val()
     key = $('#select-verify-public-key').val()
     $('#modal-verify').modal('hide')
     signedText = $('#popup-textarea').val()
     index = parseInt(key)
-    engine.getPublicKeys master_password, (err, keys) ->
+    engine.getPublicKeys masterPassword, (err, keys) ->
       if err
-        alert err
+        console.log 'Error getting keys:', err
       else
         engine.verify signedText, keys[index], (err, result) ->
           if result and !err
-            $('#verification-success').removeClass('hidden').addClass('show')
-            $('#verification-failure').removeClass('show').addClass('hidden')
-          else
-            $('#verification-failure').removeClass('hidden').addClass('show')
-            $('#verification-success').removeClass('show').addClass('hidden')
-          yes
+            badSignatures = (signature for signature in result.signatures when signature.valid is false)
 
-    $('#popup-textarea').val(cipherText)
-    #We send the content-script our new ciphertext
-    chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
-      chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
-        if response and response.status is 'ok'
-          #Do nothing, injection successful
-        else
-          #Did not inject, just alter textarea
-          $('#popup-textarea').val(cipherText)
+            if badSignatures.length is 0 and result.signatures.length > 0
+              $('#verification-success').removeClass('hidden').addClass('show')
+              $('#verification-failure').removeClass('show').addClass('hidden')
+            else
+              $('#verification-failure').removeClass('hidden').addClass('show')
+              $('#verification-success').removeClass('show').addClass('hidden')
+          else
+            console.log 'Error verifying signature:', err
+          yes
 
   sign = ()->
     masterPassword = $('#input-sign-master-password').val()
