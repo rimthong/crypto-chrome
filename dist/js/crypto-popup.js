@@ -68,6 +68,7 @@ $(function() {
         return console.log('Error getting keys:', err);
       } else {
         return engine.sign(plainText, keys[index], keyPassword, function(err, signedMessage) {
+          console.log("Signature errors are:", err);
           $('#popup-textarea').val(signedMessage);
           return chrome.tabs.query({
             active: true,
@@ -75,7 +76,7 @@ $(function() {
           }, function(tabs) {
             return chrome.tabs.sendMessage(tabs[0].id, {
               fonction: 'inject',
-              message: signed_message
+              message: signedMessage
             }, function(response) {});
           });
         });
@@ -147,7 +148,7 @@ $(function() {
             }, function(tabs) {
               return chrome.tabs.sendMessage(tabs[0].id, {
                 fonction: 'inject',
-                message: cipherText
+                message: ciphertext
               }, function(response) {});
             });
           });
@@ -245,7 +246,7 @@ $(function() {
           }, function(tabs) {
             return chrome.tabs.sendMessage(tabs[0].id, {
               fonction: 'inject',
-              message: cipherText
+              message: ciphertext
             }, function(response) {});
           });
         });

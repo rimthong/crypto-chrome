@@ -50,10 +50,11 @@ $ ->
         console.log 'Error getting keys:', err
       else
         engine.sign plainText, keys[index], keyPassword, (err, signedMessage) ->
+          console.log "Signature errors are:", err
           $('#popup-textarea').val(signedMessage)
           #We send the content-script our signed text
           chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
-            chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: signed_message}, (response)->
+            chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: signedMessage}, (response)->
 
   $('.button-close-sign').click ()->
     $('#modal-sign').modal('hide')
@@ -110,7 +111,7 @@ $ ->
             console.log "Sign and encrypt, error is:", err
             $('#popup-textarea').val(ciphertext)
             chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
-              chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
+              chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: ciphertext}, (response)->
                 #Either way, we put the encrypted version in text box
 
   $('.button-close-encrypt-sign').click ()->
@@ -180,7 +181,7 @@ $ ->
           #We send the content-script our new ciphertext
           $('#popup-textarea').val(ciphertext)
           chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
-            chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
+            chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: ciphertext}, (response)->
               #Either way, we put the encrypted version in text box
 
   $('.button-close-encrypt').click ()->

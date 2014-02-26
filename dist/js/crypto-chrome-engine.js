@@ -27,9 +27,7 @@ cryptochrome_engine = function() {
     return openpgp.decryptAndVerifyMessage(privateKey.keys[0], publicKeys.keys, message, callback);
   };
   this.sign = function(message, keys, passphrase, callback) {
-    var key;
-    key = keys.keys[0];
-    key.getSigningKeyPacket().decrypt(passphrase);
+    keys.keys[0].getSigningKeyPacket().decrypt(passphrase);
     return openpgp.signClearMessage(keys.keys, message, callback);
   };
   this.verify = function(text, key, callback) {
