@@ -139,6 +139,7 @@ $(function() {
           return console.log('Error getting keys:', err1, err2);
         } else {
           return engine.signAndEncrypt(publicKeys[publicKeyIndex], privateKeys[privateKeyIndex], keyPassword, plaintext, function(err, ciphertext) {
+            console.log("Sign and encrypt, error is:", err);
             $('#popup-textarea').val(ciphertext);
             return chrome.tabs.query({
               active: true,
@@ -184,8 +185,7 @@ $(function() {
         } else {
           return engine.decryptAndVerify(privateKeys[privateKeyIndex], publicKeys[publicKeyIndex], keyPassword, ciphertext, function(err, result) {
             var badSignatures, signature;
-            console.log("Decrypt and verify err", err);
-            console.log("Decrypt and verify result", result);
+            $('#popup-textarea').val(result.text);
             if (result && !err) {
               badSignatures = (function() {
                 var _i, _len, _ref, _results;

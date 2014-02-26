@@ -107,6 +107,7 @@ $ ->
           console.log 'Error getting keys:', err1, err2
         else
           engine.signAndEncrypt publicKeys[publicKeyIndex], privateKeys[privateKeyIndex], keyPassword, plaintext, (err, ciphertext)->
+            console.log "Sign and encrypt, error is:", err
             $('#popup-textarea').val(ciphertext)
             chrome.tabs.query {active:true, currentWindow:true}, (tabs) ->
               chrome.tabs.sendMessage tabs[0].id, {fonction: 'inject', message: cipherText}, (response)->
@@ -140,9 +141,7 @@ $ ->
           console.log 'Error getting keys:', err
         else
           engine.decryptAndVerify privateKeys[privateKeyIndex], publicKeys[publicKeyIndex], keyPassword, ciphertext, (err, result) ->
-            console.log "Decrypt and verify err", err
-            console.log "Decrypt and verify result", result
-            #$('#popup-textarea').val text
+            $('#popup-textarea').val(result.text)
             if result and !err
               badSignatures = (signature for signature in result.signatures when signature.valid is false)
 
