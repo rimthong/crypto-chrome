@@ -1,7 +1,7 @@
-var read_storage;
+var readStorage;
 
 $(function() {
-  var addPrivateKey, addPublicKey, engine, read_keys, removePrivateKey, removePublicKey;
+  var addPrivateKey, addPublicKey, engine, readKeys, removePrivateKey, removePublicKey;
   engine = cryptochrome_engine();
   $('#button-submit-add-public-key').click(function() {
     var key, password;
@@ -95,13 +95,13 @@ $(function() {
     var password;
     password = $('#input-entered-master-password').val();
     $('#modal-enter-master-password').modal('hide');
-    return read_keys(password);
+    return readKeys(password);
   });
   $('#form-enter-master-password').submit(function() {
     var password;
     event.preventDefault();
     password = $('#input-entered-master-password').val();
-    read_keys(password);
+    readKeys(password);
     return $('#modal-enter-master-password').modal('hide');
   });
   $('.button-close-enter-master-password').click(function() {
@@ -111,21 +111,21 @@ $(function() {
     var password;
     password = $('#input-initialized-master-password').val();
     $('#modal-initialize-master-password').modal('hide');
-    return read_keys(password);
+    return readKeys(password);
   });
   $('#form-initialize-master-password').submit(function() {
     var password;
     event.preventDefault();
     password = $('#input-initialized-master-password').val();
     $('#modal-initialize-master-password').modal('hide');
-    return read_keys(password);
+    return readKeys(password);
   });
   $('.button-close-enter-master-password').click(function() {
     return $('#modal-initialize-master-password').modal('hide');
   });
-  read_keys = function(master_password) {
+  readKeys = function(masterPassword) {
     var hash, i, key, keys, name, priv_keys, pub_keys, storage, _i, _j, _len, _len1, _results;
-    if (!master_password) {
+    if (!masterPassword) {
       storage = window.localStorage;
       if (!(storage['crypto-chrome-pub'] || storage['crypto-chrome-priv'])) {
         return $('#modal-initialize-master-password').modal();
@@ -133,7 +133,7 @@ $(function() {
         return $('#modal-enter-master-password').modal();
       }
     } else {
-      keys = read_storage(master_password, engine);
+      keys = readStorage(masterPassword, engine);
       pub_keys = keys[0];
       priv_keys = keys[1];
       $("#public tbody, #private tbody").empty();
@@ -141,8 +141,8 @@ $(function() {
         i = 0;
         for (_i = 0, _len = pub_keys.length; _i < _len; _i++) {
           key = pub_keys[_i];
-          name = openpgp_encoding_html_encode(key[0].userIds[0].text);
-          hash = CryptoJS.MD5(key[0].data);
+          name = key.keys[0].users[0].userId.userid;
+          hash = CryptoJS.MD5(key.keys[0].primaryKey.getFingerprint());
           $("#public tbody").append("<tr>\n  <td>" + i + "</td>\n  <td><img src='http://www.gravatar.com/avatar/" + hash + "?d=identicon&s=40' /></td>\n  <td>" + name + "</td>\n  <td>\n    <button class='btn btn-danger btn-small remove-public-key' data-index='" + i + "' data-name='" + name + "'>\n      <i class='icon-minus'></i> Remove\n    </button>\n  </td>\n</tr>");
           i++;
         }
@@ -152,8 +152,8 @@ $(function() {
         _results = [];
         for (_j = 0, _len1 = priv_keys.length; _j < _len1; _j++) {
           key = priv_keys[_j];
-          name = openpgp_encoding_html_encode(key[0].userIds[0].text);
-          hash = CryptoJS.MD5(key[0].data);
+          name = key.keys[0].users[0].userId.userid;
+          hash = CryptoJS.MD5(key.keys[0].primaryKey.encrypted);
           $("#private tbody").append("<tr>\n  <td>" + i + "</td>\n  <td><img src='http://www.gravatar.com/avatar/" + hash + "?d=identicon&s=40' /></td>\n  <td>" + name + "</td>\n  <td>\n    <button class='btn btn-danger btn-small remove-private-key' data-index='" + i + "' data-name='" + name + "'>\n      <i class='icon-minus'></i> Remove\n    </button>\n  </td>\n</tr>\"");
           _results.push(i++);
         }
@@ -161,16 +161,16 @@ $(function() {
       }
     }
   };
-  read_keys();
+  readKeys();
   $('#add-public-key').click(function() {
     return $('#modal-add-public-key').modal('show');
   });
-  addPublicKey = function(master_password, key) {
-    engine.addPublicKey(master_password, key, function(err) {
+  addPublicKey = function(masterPassword, key) {
+    engine.addPublicKey(masterPassword, key, function(err) {
       if (err) {
         return console.log(err);
       } else {
-        return read_keys(master_password);
+        return readKeys(masterPassword);
       }
     });
     return true;
@@ -178,12 +178,12 @@ $(function() {
   $('#add-private-key').click(function() {
     return $('#modal-add-private-key').modal('show');
   });
-  addPrivateKey = function(master_password, key) {
-    engine.addPrivateKey(master_password, key, function(err) {
+  addPrivateKey = function(masterPassword, key) {
+    engine.addPrivateKey(masterPassword, key, function(err) {
       if (err) {
         return console.log(err);
       } else {
-        return read_keys(master_password);
+        return readKeys(masterPassword);
       }
     });
     return true;
@@ -196,12 +196,12 @@ $(function() {
     $('#private-key-to-remove-index').val(index);
     return $('#modal-remove-private-key').modal('show');
   });
-  removePrivateKey = function(master_password, keyIndex) {
-    return engine.deletePrivateKeyByIndex(master_password, keyIndex, function(err) {
+  removePrivateKey = function(masterPassword, keyIndex) {
+    return engine.deletePrivateKeyByIndex(masterPassword, keyIndex, function(err) {
       if (err) {
         return console.log(err);
       } else {
-        return read_keys(master_password);
+        return readKeys(masterPassword);
       }
     });
   };
@@ -213,38 +213,33 @@ $(function() {
     $('#public-key-to-remove-index').val(index);
     return $('#modal-remove-public-key').modal('show');
   });
-  return removePublicKey = function(master_password, keyIndex) {
-    return engine.deletePublicKeyByIndex(master_password, keyIndex, function(err) {
+  return removePublicKey = function(masterPassword, keyIndex) {
+    return engine.deletePublicKeyByIndex(masterPassword, keyIndex, function(err) {
       if (err) {
         return console.log(err);
       } else {
-        return read_keys(master_password);
+        return readKeys(masterPassword);
       }
     });
   };
 });
 
-read_storage = function(master_password, engine) {
-  var e, privKeys, pubKeys, storage;
+readStorage = function(masterPassword, engine) {
+  var e, storage;
   storage = window.localStorage;
   if (!(storage['crypto-chrome-pub'] || storage['crypto-chrome-priv'])) {
     if (!storage['crypto-chrome-pub']) {
-      storage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify([]));
+      storage['crypto-chrome-pub'] = sjcl.encrypt(masterPassword, JSON.stringify([]));
     }
     if (!storage['crypto-chrome-priv']) {
-      storage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify([]));
+      return storage['crypto-chrome-priv'] = sjcl.encrypt(masterPassword, JSON.stringify([]));
     }
   } else {
     try {
-      pubKeys = null;
-      privKeys = null;
-      engine.getPublicKeys(master_password, function(err, keys) {
-        var pub_keys;
-        return pub_keys = keys;
-      });
-      engine.getPrivateKeys(master_password, function(err, keys) {
-        var priv_keys;
-        return priv_keys = keys;
+      return engine.getPublicKeys(masterPassword, function(err, pubKeys) {
+        return engine.getPrivateKeys(masterPassword, function(err, privKeys) {
+          return [pubKeys, privKeys];
+        });
       });
     } catch (_error) {
       e = _error;
@@ -252,5 +247,4 @@ read_storage = function(master_password, engine) {
       throw e;
     }
   }
-  return [pubKeys, privKeys];
 };

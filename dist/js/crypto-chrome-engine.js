@@ -60,7 +60,7 @@ cryptochrome_engine = function() {
     armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-pub']));
     if (armoredKeys) {
       armoredKeys.push(armoredKey);
-      window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys));
+      window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(masterPassword, JSON.stringify(armoredKeys));
       return callback();
     } else {
       return callback('Wrong master password.');
@@ -89,7 +89,7 @@ cryptochrome_engine = function() {
     armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-priv']));
     if (armoredKeys) {
       armoredKeys.push(armoredKey);
-      window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(keys));
+      window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(masterPassword, JSON.stringify(armoredKeys));
       return callback(null);
     } else {
       return callback('Wrong master password.');
@@ -117,16 +117,16 @@ cryptochrome_engine = function() {
   };
   this.deletePublicKeyByIndex = function(masterPassword, index, callback) {
     var armoredKeys;
-    armoredKeys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-pub']));
+    armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-pub']));
     armoredKeys.splice(index, 1);
-    window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify(armoredKeys));
+    window.localStorage['crypto-chrome-pub'] = sjcl.encrypt(masterPassword, JSON.stringify(armoredKeys));
     return callback(null);
   };
   this.deletePrivateKeyByIndex = function(masterPassword, index, callback) {
     var armoredKeys;
-    armoredKeys = JSON.parse(sjcl.decrypt(master_password, window.localStorage['crypto-chrome-priv']));
+    armoredKeys = JSON.parse(sjcl.decrypt(masterPassword, window.localStorage['crypto-chrome-priv']));
     armoredKeys.splice(index, 1);
-    window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify(armoredKeys));
+    window.localStorage['crypto-chrome-priv'] = sjcl.encrypt(masterPassword, JSON.stringify(armoredKeys));
     return callback(null);
   };
   this.init();

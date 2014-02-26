@@ -84,12 +84,12 @@ $ ->
   $('#button-confirm-enter-master-password').click ()->
     password = $('#input-entered-master-password').val()
     $('#modal-enter-master-password').modal('hide')
-    read_keys(password)
+    readKeys(password)
 
   $('#form-enter-master-password').submit ()->
     event.preventDefault()
     password = $('#input-entered-master-password').val()
-    read_keys(password)
+    readKeys(password)
     $('#modal-enter-master-password').modal('hide')
 
   $('.button-close-enter-master-password').click ()->
@@ -98,19 +98,19 @@ $ ->
   $('#button-confirm-initialize-master-password').click ()->
     password = $('#input-initialized-master-password').val()
     $('#modal-initialize-master-password').modal('hide')
-    read_keys(password)
+    readKeys(password)
 
   $('#form-initialize-master-password').submit ()->
     event.preventDefault()
     password = $('#input-initialized-master-password').val()
     $('#modal-initialize-master-password').modal('hide')
-    read_keys(password)
+    readKeys(password)
 
   $('.button-close-enter-master-password').click ()->
     $('#modal-initialize-master-password').modal('hide')
 
-  read_keys = (master_password) ->
-    if not master_password
+  readKeys = (masterPassword) ->
+    if not masterPassword
       storage = window.localStorage
       if not (storage['crypto-chrome-pub'] or storage['crypto-chrome-priv'])
         #Initialize popup
@@ -119,7 +119,7 @@ $ ->
         #Master password popup
         $('#modal-enter-master-password').modal()
     else
-      keys = read_storage master_password, engine
+      keys = readStorage masterPassword, engine
       pub_keys = keys[0]
       priv_keys = keys[1]
 
@@ -127,8 +127,8 @@ $ ->
       if pub_keys and pub_keys.length > 0
         i = 0
         for key in pub_keys
-          name = openpgp_encoding_html_encode(key[0].userIds[0].text)
-          hash = CryptoJS.MD5(key[0].data)
+          name = key.keys[0].users[0].userId.userid
+          hash = CryptoJS.MD5(key.keys[0].primaryKey.getFingerprint())
           $("#public tbody").append """
              <tr>
                <td>#{i}</td>
@@ -146,8 +146,8 @@ $ ->
       if priv_keys and priv_keys.length > 0
         i = 0
         for key in priv_keys
-          name = openpgp_encoding_html_encode(key[0].userIds[0].text)
-          hash = CryptoJS.MD5(key[0].data)
+          name = key.keys[0].users[0].userId.userid
+          hash = CryptoJS.MD5(key.keys[0].primaryKey.encrypted)
           $("#private tbody").append """
             <tr>
               <td>#{i}</td>
@@ -162,28 +162,28 @@ $ ->
             """
           i++
 
-  read_keys()
+  readKeys()
 
   $('#add-public-key').click ->
     $('#modal-add-public-key').modal('show')
 
-  addPublicKey = (master_password, key)->
-    engine.addPublicKey master_password, key, (err) ->
+  addPublicKey = (masterPassword, key)->
+    engine.addPublicKey masterPassword, key, (err) ->
       if err
         console.log err
       else
-        read_keys(master_password)
+        readKeys(masterPassword)
     yes
 
   $('#add-private-key').click ->
     $('#modal-add-private-key').modal('show')
 
-  addPrivateKey = (master_password, key)->
-    engine.addPrivateKey master_password, key, (err) ->
+  addPrivateKey = (masterPassword, key)->
+    engine.addPrivateKey masterPassword, key, (err) ->
       if err
         console.log err
       else
-        read_keys(master_password)
+        readKeys(masterPassword)
     yes
 
   $('#private').on 'click', '.remove-private-key', ->
@@ -193,12 +193,12 @@ $ ->
     $('#private-key-to-remove-index').val(index)
     $('#modal-remove-private-key').modal('show')
 
-  removePrivateKey = (master_password, keyIndex)->
-    engine.deletePrivateKeyByIndex master_password, keyIndex, (err) ->
+  removePrivateKey = (masterPassword, keyIndex)->
+    engine.deletePrivateKeyByIndex masterPassword, keyIndex, (err) ->
       if err
         console.log err
       else
-        read_keys(master_password)
+        readKeys(masterPassword)
 
   $('#public').on 'click', '.remove-public-key', ->
     index = parseInt $(@).data('index')
@@ -207,35 +207,29 @@ $ ->
     $('#public-key-to-remove-index').val(index)
     $('#modal-remove-public-key').modal('show')
 
-  removePublicKey = (master_password, keyIndex)->
-    engine.deletePublicKeyByIndex master_password, keyIndex, (err) ->
+  removePublicKey = (masterPassword, keyIndex)->
+    engine.deletePublicKeyByIndex masterPassword, keyIndex, (err) ->
       if err
         console.log err
       else
-        read_keys(master_password)
+        readKeys(masterPassword)
 
-read_storage = (master_password, engine) ->
+readStorage = (masterPassword, engine) ->
   storage = window.localStorage
 
   if not (storage['crypto-chrome-pub'] or storage['crypto-chrome-priv'])
     if not storage['crypto-chrome-pub']
-      storage['crypto-chrome-pub'] = sjcl.encrypt(master_password, JSON.stringify([]))
+      storage['crypto-chrome-pub'] = sjcl.encrypt(masterPassword, JSON.stringify([]))
     if not storage['crypto-chrome-priv']
-      storage['crypto-chrome-priv'] = sjcl.encrypt(master_password, JSON.stringify([]))
+      storage['crypto-chrome-priv'] = sjcl.encrypt(masterPassword, JSON.stringify([]))
   else
     try
-      pubKeys = null
-      privKeys = null
-
-      engine.getPublicKeys master_password, (err, keys) ->
-        pub_keys = keys
-      
-      engine.getPrivateKeys master_password, (err, keys) ->
-        priv_keys = keys
+      engine.getPublicKeys masterPassword, (err, pubKeys) ->
+        engine.getPrivateKeys masterPassword, (err, privKeys) ->
+          return [pubKeys, privKeys]
 
     catch e
       alert "Failed to decrypt storage"
       throw e
 
-  return [pubKeys, privKeys]
 
